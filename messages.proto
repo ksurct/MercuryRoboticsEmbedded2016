@@ -1,0 +1,39 @@
+message Servo {
+
+}
+
+message Motor {
+
+}
+
+message LED {
+    bool state = 0;
+}
+
+message someDevice {
+    oneof device {
+        Servo servo = 0;
+        Motor motor = 1;
+        LED led = 2;
+    }
+}
+
+message setDevice {
+    int device_num = 0;
+    someDevice device = 1;
+}
+
+message getDevice {
+    device_num = 0;
+    someDevice device = 1;
+}
+
+message devices {
+    Servo servo1 = 0;
+    Motor motor1 = 1;
+    Motor motor2 = 2;
+}
+
+message RobotMessage {
+
+}
