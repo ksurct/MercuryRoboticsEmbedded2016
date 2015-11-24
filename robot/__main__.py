@@ -1,14 +1,37 @@
-from .hardware.parts import RobotBase, LED, Motor
-from .protocol.server import Server
+import logging.config
+from setproctitle import setproctitle
+
+setproctitle('ksurctrobot')
+
+logging.config.dictConfig({
+    'version': 1,
+    'formatters': {
+        'f': {
+            'format':
+                'log  %(levelname)-8s %(name)-12s %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'formatter': 'f',
+            'class': 'logging.StreamHandler',
+            'level': logging.DEBUG,
+        }
+    },
+    'loggers': {
+        'robot': {
+            'propagate': False,
+            'handlers': ['console'],
+            'level': logging.DEBUG,
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': logging.DEBUG,
+    },
+})
 
 
-class Robot(RobotBase):
-    def __init__(self):
-        super().__init__()
-        self.head_lights = self.attach_device(LED(17))
-        self.motor_left = self.attach_device(Motor(23, 24, 25))
-        self.motor_right = self.attach_device(Motor(26, 27, 28))
+from .main import main
 
-
-with Robot() as robot, Server() as server:
-    pass
+main()

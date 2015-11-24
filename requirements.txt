@@ -1,2 +1,3 @@
 protobuf==2.6.1
 RPi.GPIO==0.5.11
+websockets==2.7
