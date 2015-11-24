@@ -6,14 +6,17 @@ setproctitle('ksurctrobot')
 logging.config.dictConfig({
     'version': 1,
     'formatters': {
-        'f': {
+        'long': {
+            'format': '%(relativeCreated)d %(threadName)-12s  %(levelname)-8s %(name)-12s %(message)s'
+        },
+        'brief': {
             'format':
-                'log  %(levelname)-8s %(name)-12s %(message)s'
+                'log %(threadName)-12s  %(levelname)-8s %(name)-12s %(message)s'
         },
     },
     'handlers': {
         'console': {
-            'formatter': 'f',
+            'formatter': 'brief',
             'class': 'logging.StreamHandler',
             'level': logging.DEBUG,
         }
