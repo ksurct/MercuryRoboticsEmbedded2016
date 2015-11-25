@@ -1,6 +1,6 @@
 import asyncio
 import websockets
-from threading import Thread Event
+from threading import Thread, Event
 from queue import Queue
 from ctypes import c_bool
 from multiprocessing import Value
@@ -91,38 +91,53 @@ class EventLoopThread(object):
         self.loop.stop()
 
 
+class WebsocketServer(object):
+    def __init__(self, queue, port):
+        self.queue = queue
+        self.port = port
+
+    def __enter__(self):
+        pass
+
+    def __exit__(self, *exc):
+        pass
+
+    async def handle(self, ws, path):
+        while True:
+            result = await ws.recv()
+            if result is None:
+                return
+            self.queue.put(result)
+
+    def server(self):
+        logger.info('starting websockets server')
+        start_server = websockets.serve(self.handle, '127.0.0.1', 5678)
+        return start_server
+
+
 class Server(object):
     def __init__(self, port):
         self.context = None
-        self.server = EventLoopThread([self.start_server()])
+        self.server = None
+        self.queue = None
 
     def __enter__(self):
         self.context = ExitStack()
-        self.context.enter_context(self.server)
         self.context.enter_context(self.event_loop_context())
+        self.server = EventLoopThread([WebsocketServer(self.queue, 5678).server()])
+        self.context.enter_context(self.server)
+        return self
 
     def __exit__(self, *enc):
         self.context.__exit__(*enc)
 
-    @asyncio.coroutine
-    def time(self, websocket, path):
-        import datetime
-        import random
-        while True:
-            now = datetime.datetime.utcnow().isoformat() + 'Z'
-            if not websocket.open:
-                return
-            yield from websocket.send(now)
-            yield from asyncio.sleep(random.random() * 3)
-
-    def start_server(self):
-        logger.info('starting websockets server')
-        start_server = websockets.serve(self.time, '127.0.0.1', 5678)
-        # self.server.loop.run_until_complete(start_server)
-        return start_server
+    def recv(self):
+        result = self.queue.get()
+        return result
 
     @contextmanager
     def event_loop_context(self):
         with ExitStack() as stack:
-            # self.server.loop.call_soon_threadsafe(self.start_server)
+            stack.callback(lambda: setattr(self, 'queue', None))
+            self.queue = Queue()
             yield
