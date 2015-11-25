@@ -96,12 +96,6 @@ class WebsocketServer(object):
         self.queue = queue
         self.port = port
 
-    def __enter__(self):
-        pass
-
-    def __exit__(self, *exc):
-        pass
-
     async def handle(self, ws, path):
         while True:
             result = await ws.recv()

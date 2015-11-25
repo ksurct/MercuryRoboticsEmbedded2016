@@ -2,6 +2,9 @@
 A shim that kinda-sorta emulates RPi.GPIO. Don't expect too much.
 
 """
+import logging
+logger = logging.getLogger(__name__)
+logger.warning('using fake gpio')
 
 
 class PWM(object):

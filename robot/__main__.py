@@ -7,7 +7,8 @@ logging.config.dictConfig({
     'version': 1,
     'formatters': {
         'long': {
-            'format': '%(relativeCreated)d %(threadName)-12s  %(levelname)-8s %(name)-12s %(message)s'
+            'format':
+                '%(relativeCreated)d %(threadName)-12s  %(levelname)-8s %(name)-12s %(message)s'
         },
         'brief': {
             'format':
