@@ -84,10 +84,11 @@ class EventLoopThread(object):
             self.loop.call_soon_threadsafe(self.stop_loop)
             logger.info('stopped eventloop')
 
-    async def _close_connections(self):
+    @asyncio.coroutine
+    def _close_connections(self):
         for server in self.servers:
             server.close()
-            await server.wait_closed()
+            yield from server.wait_closed()
         self.loop.stop()
 
 
@@ -96,9 +97,10 @@ class WebsocketServer(object):
         self.queue = queue
         self.port = port
 
-    async def handle(self, ws, path):
+    @asyncio.coroutine
+    def handle(self, ws, path):
         while True:
-            result = await ws.recv()
+            result = yield from ws.recv()
             if result is None:
                 return
             self.queue.put(result)

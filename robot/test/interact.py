@@ -1,10 +1,11 @@
 import asyncio
 import websockets
+from contextlib import ExitStack
 
 from ptpython.repl import embed
 
 from ..protocol.proto import main_pb2
-
+from ..main import Robot
 
 class Websocket(object):
     def __init__(self):
@@ -27,8 +28,11 @@ class Websocket(object):
 
 
 def main():
-    ws = Websocket()
-    embed(globals(), locals())
+    with ExitStack() as e:
+        r = Robot()
+        e.enter_context(r)
+    # ws = Websocket()
+        embed(globals(), locals())
 
 
 if __name__ == '__main__':

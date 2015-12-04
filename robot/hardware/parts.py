@@ -62,7 +62,7 @@ class Motor(object):
         if type == 0:
             GPIO.output(self.dir_pin_a, False)
             GPIO.output(self.dir_pin_b, False)
-        else:
+        else:  # Maybe better
             GPIO.output(self.dir_pin_a, True)
             GPIO.output(self.dir_pin_b, True)
 
