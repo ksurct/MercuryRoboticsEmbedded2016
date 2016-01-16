@@ -8,5 +8,10 @@ setup(
     packages=find_packages(),
     package_dir={'ksurobot':
                  'robot'},
-    install_requires=[]
+    install_requires=[],
+    entry_points={
+        'console_scripts': [
+            'ksurobot = ksurobot:main'
+        ]
+    },
 )
