@@ -13,6 +13,7 @@ let
     pkgs = import ((import <nixpkgs> {}).fetchzip nixpkgs) {
         inherit config;};
 in let {
+    body = ksurobot;
     body = pkgs.callPackage ./system.nix {inherit ksurobot;};
-    ksurobot = pkgs.callPackage ./ksurobot.nix {};
+    /*ksurobot = pkgs.callPackage ./ksurobot.nix {};*/
 }

@@ -8,7 +8,7 @@ let {
         version = "0.1.0";
         src = ../.;
 
-        pythonPath = with pythonPackages; [ python websockets six setproctitle rpigpio ptpython ];
+        pythonPath = with pythonPackages; [ python websockets six setproctitle rpigpio ptpython wiringpi ];
         propagatedBuildInputs = [python pythonPackages.wrapPython];
 
         configurePhase = ''

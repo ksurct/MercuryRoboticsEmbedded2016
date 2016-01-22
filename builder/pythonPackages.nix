@@ -1,10 +1,18 @@
-{pkgs, pythonPackages}:
+{pkgs, pythonPackages, stdenv}:
 let
     pp = pythonPackages;
 in
 with pp;
 pythonPackages //
 rec {
+    wiringpi = buildPythonPackage {
+        name = "wiringpi";
+        src = pkgs.fetchurl {
+            url = https://github.com/WiringPi/WiringPi2-Python/archive/4ad103ca49de3b05f2c749e7445ece35c5e6b390.tar.gz;
+            sha256 = "13qcrwibv33cm2cky7almqai1li853njirz0qmlbwa3l764dr6qg";
+        };
+    };
+
     pygments = buildPythonPackage {
         name = "pygments";
         src = pkgs.fetchurl {
