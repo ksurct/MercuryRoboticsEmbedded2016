@@ -1,0 +1,39 @@
+
+message Robot {
+    // Message to the robot
+    optional LED headlights = 1;
+    optional Motor motor_1 = 2;
+    optional Motor motor_2 = 3;
+    repeated Procedure procedures = 4;
+
+    message Motor {
+        optional bool update = 1;
+        optional int32 speed = 2;
+    }
+    message Servo {
+        optional bool update = 1;
+        optional int32 degree = 2;
+    }
+    message LED {
+        optional bool update = 1;
+        optional bool on = 2;
+    }
+    message Procedure {
+        oneof procedure {
+            GoInCircle circle = 1;
+        }
+
+        message GoInCircle {
+            required int32 radius = 1;
+        }
+    }
+}
+
+message BaseStation {
+    // Message to the basestation
+    optional Battery battery = 1;
+
+    message Battery {
+        optional int32 charge = 1;
+    }
+}

@@ -1,0 +1,4 @@
+protobuf==3.0.0a3
+RPi.GPIO==0.5.11
+setproctitle==1.1.9
+websockets==2.7
