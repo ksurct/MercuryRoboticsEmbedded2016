@@ -1,5 +1,6 @@
 from .hardware.parts import RobotBase, LED, Motor
 from .protocol.server import Server
+from .process_setup import process_setup
 
 
 class Robot(RobotBase):
@@ -11,6 +12,7 @@ class Robot(RobotBase):
 
 
 def main():
+    process_setup()
 
     with Robot() as robot, Server(8002) as server:
         while True:

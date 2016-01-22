@@ -14,6 +14,6 @@ let
         inherit config;};
 in let {
     body = ksurobot;
-    body = pkgs.callPackage ./system.nix {inherit ksurobot;};
-    /*ksurobot = pkgs.callPackage ./ksurobot.nix {};*/
+    /*body = pkgs.callPackage ./system.nix {inherit ksurobot;};*/
+    ksurobot = pkgs.callPackage ./ksurobot.nix {};
 }

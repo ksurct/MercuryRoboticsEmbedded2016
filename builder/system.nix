@@ -2,5 +2,6 @@
 stdenv.mkDerivation {
     name = "ksurobot-system";
     src = ./src;
-    buildInputs = [which ksurobot];
+    buildInputs = [which];
+    propagatedBuildInputs = [ksurobot];
 }
