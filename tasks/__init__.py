@@ -4,6 +4,13 @@ from paramiko.client import SSHClient, AutoAddPolicy
 
 from .runners import RemoteRunner
 
+EXCLUDED_FILES = [
+    '/_build',
+    '/result',
+    '*.pyc',
+    '.*'
+]
+
 
 srv = Context(
     Config({
@@ -22,8 +29,14 @@ def setup(ctx):
 
 
 @task
-def build(ctx):
-    ctx.run('nix-build --option system armv7l-linux')
+def build(ctx, for_arm=False):
+    excluded_file_list = ' '.join(("--exclude='{}'".format(f) for f in EXCLUDED_FILES))
+    ctx.run('rsync -azvr --delete --delete-excluded {} ./ ./_build'.format(excluded_file_list))
+
+    build_cmd = 'nix-build ./_build'
+    if for_arm:
+        build_cmd += ' --option system armv7l-linux'
+    ctx.run(build_cmd)
 
 
 @task
