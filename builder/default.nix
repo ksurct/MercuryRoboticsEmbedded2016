@@ -9,11 +9,9 @@ let
             python35Packages = pkgs.callPackage ./pythonPackages.nix {pythonPackages=pkgs.python35Packages;};
         };
     };
-    system = "armv7l-linux";
     pkgs = import ((import <nixpkgs> {}).fetchzip nixpkgs) {
         inherit config;};
 in let {
     body = ksurobot;
-    /*body = pkgs.callPackage ./system.nix {inherit ksurobot;};*/
     ksurobot = pkgs.callPackage ./ksurobot.nix {};
 }

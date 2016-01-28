@@ -1,19 +1,32 @@
-from .hardware.parts import RobotBase, LED, Motor
-from .protocol.server import Server
-from .process_setup import process_setup
+import argparse
 
 
-class Robot(RobotBase):
-    def __init__(self):
-        super().__init__()
-        self.head_lights = self.attach_device(LED(17))
-        self.motor_left = self.attach_device(Motor(20, 19, 18))
-        self.motor_right = self.attach_device(Motor(17, 16, 13))
+def run_robot(ns):
+    from .robot import main
+    main()
 
 
-def main():
-    process_setup()
+def run_install(ns):
+    from .install import main
+    main()
 
-    with Robot() as robot, Server(8002) as server:
-        while True:
-            print(server.recv())
+
+def run_interact(ns):
+    from .test.interact import main
+    main()
+
+
+parser = argparse.ArgumentParser(prog='ksurobot')
+subparser = parser.add_subparsers()
+
+robot_parser = subparser.add_parser('robot')
+robot_parser.set_defaults(func=run_robot)
+
+install_parser = subparser.add_parser('install')
+install_parser.set_defaults(func=run_install)
+
+interact_parser = subparser.add_parser('interact')
+interact_parser.set_defaults(func=run_interact)
+
+args = parser.parse_args()
+args.func(args)

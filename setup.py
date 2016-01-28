@@ -12,4 +12,9 @@ setup(
             'ksurobot = ksurobot.main:main'
         ]
     },
+    package_data = {
+        'ksurobot': [
+            'install/files/*',
+        ]
+    }
 )
