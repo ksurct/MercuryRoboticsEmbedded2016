@@ -6,7 +6,7 @@ from .process_setup import process_setup
 class Robot(RobotBase):
     def __init__(self):
         super().__init__()
-        self.head_lights = self.attach_device(LED(17))
+        self.head_lights = self.attach_device(LED(6))
         self.motor_left = self.attach_device(Motor(20, 19, 18))
         self.motor_right = self.attach_device(Motor(17, 16, 13))
 
