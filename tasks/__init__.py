@@ -5,10 +5,7 @@ from paramiko.client import SSHClient, AutoAddPolicy
 from .runners import RemoteRunner
 
 EXCLUDED_FILES = [
-    '/_build',
-    '/result',
-    '*.pyc',
-    '.*'
+    '.*',
 ]
 
 
@@ -31,7 +28,7 @@ def setup(ctx):
 @task
 def build(ctx, for_arm=False, with_basestation=False):
     excluded_file_list = ' '.join(("--exclude='{}'".format(f) for f in EXCLUDED_FILES))
-    ctx.run('rsync -azvr --delete --delete-excluded {} ./ ./_build'.format(excluded_file_list))
+    ctx.run('rsync -azvr --delete --delete-excluded {} --filter=":- .gitignore" ./ ./_build'.format(excluded_file_list))
 
     build_cmd = 'nix-build ./_build --show-trace'
     if for_arm:
