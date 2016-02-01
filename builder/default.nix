@@ -5,7 +5,6 @@ let
     };
     config = {
         packageOverrides = pkgs: rec {
-            pythonPackages = pkgs.callPackage ./pythonPackages.nix {};
             python35Packages = pkgs.callPackage ./pythonPackages.nix {pythonPackages=pkgs.python35Packages;};
         };
     };

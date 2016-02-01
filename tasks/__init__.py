@@ -33,7 +33,7 @@ def build(ctx, for_arm=False):
     excluded_file_list = ' '.join(("--exclude='{}'".format(f) for f in EXCLUDED_FILES))
     ctx.run('rsync -azvr --delete --delete-excluded {} ./ ./_build'.format(excluded_file_list))
 
-    build_cmd = 'nix-build ./_build'
+    build_cmd = 'nix-build ./_build --show-trace'
     if for_arm:
         build_cmd += ' --option system armv7l-linux'
     ctx.run(build_cmd)

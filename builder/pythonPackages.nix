@@ -5,6 +5,14 @@ in
 with pp;
 pythonPackages //
 rec {
+    pysdl2 = buildPythonPackage {
+        name = "pysdl2-0.9.3";
+        src = pkgs.fetchurl {
+            url = https://pypi.python.org/packages/source/P/PySDL2/PySDL2-0.9.3.zip;
+            md5 = "0e3b1efa5f534666e8750b28915237ed";
+        };
+        buildInputs = [pkgs.SDL2];
+    };
 
     wiringpi = buildPythonPackage {
         name = "wiringpi";
