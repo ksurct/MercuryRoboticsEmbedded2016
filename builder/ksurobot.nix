@@ -1,6 +1,10 @@
-{python, python35Packages, protobuf, SDL2}:
+{
+    mkBasestation,
+    python, python35Packages, protobuf, SDL2, lib
+}:
 let
     pythonPackages = python35Packages;
+    mkOpt = lib.optional mkBasestation;
 in
 let {
     /*body = pythonEnv;*/
@@ -11,11 +15,10 @@ let {
 
         pythonPath = with pythonPackages; [
             python pythonPackages.protobuf websockets six setproctitle rpigpio ptpython wiringpi
-            pysdl2
-        ];
+            ] ++ mkOpt [ pysdl2 ];
         buildInputs = [ protobuf ];
 
-        makeWrapperArgs = ["--prefix LD_LIBRARY_PATH : ${SDL2}/lib/"];
+        makeWrapperArgs = mkOpt ["--prefix LD_LIBRARY_PATH : ${SDL2}/lib/"];
 
         configurePhase = ''
             make

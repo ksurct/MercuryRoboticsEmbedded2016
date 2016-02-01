@@ -8,7 +8,7 @@ setup(
     packages=find_packages(exclude=['tasks']),
     install_requires=[
         'websockets',
-        'pysdl2',
+        # 'pysdl2',
     ],
     entry_points={
         'console_scripts': [

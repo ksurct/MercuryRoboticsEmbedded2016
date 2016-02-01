@@ -29,13 +29,15 @@ def setup(ctx):
 
 
 @task
-def build(ctx, for_arm=False):
+def build(ctx, for_arm=False, with_basestation=False):
     excluded_file_list = ' '.join(("--exclude='{}'".format(f) for f in EXCLUDED_FILES))
     ctx.run('rsync -azvr --delete --delete-excluded {} ./ ./_build'.format(excluded_file_list))
 
     build_cmd = 'nix-build ./_build --show-trace'
     if for_arm:
         build_cmd += ' --option system armv7l-linux'
+    if with_basestation:
+        build_cmd += ' --arg mkBasestation true'
     ctx.run(build_cmd)
 
 

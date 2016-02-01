@@ -1,3 +1,4 @@
+{mkBasestation?false}:
 let
     nixpkgs = {
         url=https://nixos.org/releases/nixpkgs/nixpkgs-16.03pre74770.2b7b3aa//nixexprs.tar.xz;
@@ -12,5 +13,5 @@ let
         inherit config;};
 in let {
     body = ksurobot;
-    ksurobot = pkgs.callPackage ./ksurobot.nix {};
+    ksurobot = pkgs.callPackage ./ksurobot.nix {inherit mkBasestation;};
 }
