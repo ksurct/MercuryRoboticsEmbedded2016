@@ -1,5 +1,6 @@
 from .hardware.parts import RobotBase, LED, Motor
 from .protocol.server import Server
+from .protocol.proto.main_pb2 import Robot as RobotMsg
 from .process_setup import process_setup
 
 
@@ -16,4 +17,8 @@ def main():
 
     with Robot() as robot, Server(8002) as server:
         while True:
-            print(server.recv())
+            msg = RobotMsg()
+            msg.ParseFromString(server.recv())
+
+            if msg.headlights.update:
+                robot.head_lights.set(msg.headlights.on)

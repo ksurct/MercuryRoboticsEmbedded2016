@@ -24,10 +24,10 @@ async def run():
                 robot_msg.headlights.update = True
                 robot_msg.headlights.on = False
 
-            print(robot_msg.SerializeToString())
+            ser_msg = robot_msg.SerializeToString()
 
+            await websocket.send(ser_msg)
             await asyncio.sleep(.1)
-            await websocket.send("foo")
 
 
 def main():
