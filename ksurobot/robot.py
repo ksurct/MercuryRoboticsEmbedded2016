@@ -1,4 +1,9 @@
-from .hardware.parts import RobotBase, LED, Motor
+# from .hardware.parts import RobotBase, LED, Motor
+from .hardware.wiringpi_parts import (
+    WPRobotBase as RobotBase,
+    WPLED as LED,
+    WPMotor as Motor
+)
 from .protocol.server import Server
 from .protocol.proto.main_pb2 import Robot as RobotMsg
 from .process_setup import process_setup
