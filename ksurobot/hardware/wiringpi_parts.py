@@ -57,7 +57,7 @@ class WPMotor(object):
         pass
 
     def set(self, speed):
-        speed = speed*1024/100
+        speed = speed*1024//100
         if speed < 0:
             wiringpi2.digitalWrite(self.dir_pin_a, 0)
             wiringpi2.digitalWrite(self.dir_pin_b, 1)
