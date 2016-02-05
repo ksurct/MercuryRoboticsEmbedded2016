@@ -27,7 +27,8 @@ class WPLED(object):
         self.pin = num
 
     def __enter__(self):
-        wiringpi2.pinMode(self.pin, 1)
+        wiringpi2.pinMode(self.pin, wiringpi2.GPIO.OUTPUT)
+        self.set(False)
 
     def __exit__(self, *enc):
         pass
@@ -45,31 +46,26 @@ class WPMotor(object):
         self.dir_pin_b = dir_pin_b
         self.speed_pin = speed_pin
 
-        self.speed_pwm = None
-
     def __enter__(self):
-        pass
-        # GPIO.setup(self.dir_pin_a, GPIO.OUT)
-        # GPIO.setup(self.dir_pin_b, GPIO.OUT)
-        # GPIO.setup(self.speed_pin, GPIO.OUT)
-        # self.speed_pwm = GPIO.PWM(self.speed_pin, 5000)
-        # self.speed_pwm.start(0)
+        wiringpi2.pinMode(self.dir_pin_a, wiringpi2.GPIO.OUTPUT)
+        wiringpi2.pinMode(self.dir_pin_b, wiringpi2.GPIO.OUTPUT)
+        wiringpi2.pinMode(self.speed_pin, wiringpi2.GPIO.PWM_OUTPUT)
+        wiringpi2.pwmSetClock(10000)
+        self.set(0)
 
     def __exit__(self, *enc):
         pass
-        # self.speed_pwm.stop()
-        # self.speed_pwm = None
 
     def set(self, speed):
-        pass
-        # if speed < 0:
-        #     GPIO.output(self.dir_pin_a, False)
-        #     GPIO.output(self.dir_pin_b, True)
-        #     speed = -speed
-        # else:
-        #     GPIO.output(self.dir_pin_a, True)
-        #     GPIO.output(self.dir_pin_b, False)
-        # self.speed_pwm.ChangeDutyCycle(speed)
+        speed = speed*1024/100
+        if speed < 0:
+            wiringpi2.digitalWrite(self.dir_pin_a, 0)
+            wiringpi2.digitalWrite(self.dir_pin_b, 1)
+            speed = -speed
+        else:
+            wiringpi2.digitalWrite(self.dir_pin_a, 1)
+            wiringpi2.digitalWrite(self.dir_pin_b, 0)
+        wiringpi2.pwmWrite(self.speed_pin, speed)
 
     def set_feq(self, feq):
         pass
