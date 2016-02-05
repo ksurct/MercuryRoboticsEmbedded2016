@@ -5,7 +5,7 @@ from contextlib import ExitStack
 from ptpython.repl import embed
 
 from ..protocol.proto import main_pb2
-from ..main import Robot
+from ..robot import Robot
 
 class Websocket(object):
     def __init__(self):
