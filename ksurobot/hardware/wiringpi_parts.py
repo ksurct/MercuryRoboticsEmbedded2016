@@ -82,3 +82,22 @@ class WPMotor(object):
 
     def get(self):
         return 0
+
+
+class WPSpeedEncoder(object):
+    def __init__(self, pin_a, pin_b):
+        self.pin_a = pin_a
+        self.pin_b = pin_b
+
+    def __enter__(self):
+        wiringpi2.wiringPiISR(self.pin_a, wiringpi2.GPIO.INT_EDGE_FALLING, self.callback_a)
+        wiringpi2.wiringPiISR(self.pin_a, wiringpi2.GPIO.INT_EDGE_FALLING, self.callback_b)
+
+    def __exit__(self, *enc):
+        pass
+
+    def callback_a(self):
+        print('callback_a')
+
+    def callback_b(self):
+        print('callback_b')
