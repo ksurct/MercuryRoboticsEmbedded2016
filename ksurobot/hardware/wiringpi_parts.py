@@ -1,8 +1,7 @@
 from contextlib import ExitStack
-import wiringpi2
-from ctypes import CFUNCTYPE
+# import _wiringpi2
 
-mk_callback = CFUNCTYPE()
+from ._wiringpi import c_libs as wiringpi2
 
 
 class WPRobotBase(object):
