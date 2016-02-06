@@ -107,7 +107,7 @@ class WebsocketServer(object):
 
     def server(self):
         logger.info('starting websockets server')
-        start_server = websockets.serve(self.handle, '127.0.0.1', 5678)
+        start_server = websockets.serve(self.handle, '0.0.0.0', 5678)
         return start_server
 
 
