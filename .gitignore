@@ -1,4 +1,7 @@
+/result
+/output.tar*
 *_pb2.py
+/_build
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

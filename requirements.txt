@@ -1,4 +1,6 @@
-protobuf==3.0.0a3
-RPi.GPIO==0.5.11
+RPi.GPIO==0.6.1
 setproctitle==1.1.9
 websockets==2.7
+ptpython
+https://github.com/WiringPi/WiringPi2-Python/archive/4ad103ca49de3b05f2c749e7445ece35c5e6b390.tar.gz
+protobuf==3.0.0b2
