@@ -13,7 +13,7 @@ async def run():
 
     Controller.init()
     controller = Controller(0)
-    async with websockets.connect('ws://localhost:5678') as websocket:
+    async with websockets.connect('ws://raspberrypi.local:5678') as websocket:
         while True:
             controller.update()
 
@@ -22,7 +22,7 @@ async def run():
             if robot_state.headlights != controller.get_y():
                 robot_state.headlights = controller.get_y()
                 robot_msg.headlights.update = True
-                robot_msg.headlights.on = False
+                robot_msg.headlights.on = robot_state.headlights
 
             ser_msg = robot_msg.SerializeToString()
 

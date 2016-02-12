@@ -3,6 +3,8 @@
 *_pb2.py
 /_build
 
+*.swp
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
