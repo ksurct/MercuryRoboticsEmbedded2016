@@ -91,7 +91,7 @@ class WPSpeedEncoder(object):
 
     def __enter__(self):
         wiringpi2.wiringPiISR(self.pin_a, wiringpi2.InterruptModes.INT_EDGE_FALLING, self.callback_a)
-        wiringpi2.wiringPiISR(self.pin_a, wiringpi2.InterruptModes.INT_EDGE_FALLING, self.callback_b)
+        wiringpi2.wiringPiISR(self.pin_b, wiringpi2.InterruptModes.INT_EDGE_FALLING, self.callback_b)
 
     def __exit__(self, *enc):
         pass
