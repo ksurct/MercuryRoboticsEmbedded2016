@@ -97,9 +97,9 @@ class WPSpeedEncoder(object):
         pass
 
     @wiringpi2.wiringPiISR_cb
-    def callback_a(self):
+    def callback_a():
         print('callback_a')
 
     @wiringpi2.wiringPiISR_cb
-    def callback_b(self):
+    def callback_b():
         print('callback_b')
