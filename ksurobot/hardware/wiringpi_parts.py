@@ -2,7 +2,7 @@ from contextlib import ExitStack
 # import _wiringpi2
 
 from . import _wiringpi as wiringpi2
-
+from ctypes import CFUNCTYPE
 
 class WPRobotBase(object):
     def __init__(self):
@@ -90,8 +90,8 @@ class WPSpeedEncoder(object):
         self.pin_b = pin_b
 
     def __enter__(self):
-        wiringpi2.wiringPiISR(self.pin_a, wiringpi2.PinModes.INT_EDGE_FALLING, self.callback_a)
-        wiringpi2.wiringPiISR(self.pin_a, wiringpi2.PinModes.INT_EDGE_FALLING, self.callback_b)
+        wiringpi2.wiringPiISR(self.pin_a, wiringpi2.InterruptModes.INT_EDGE_FALLING, CFUNCTYPE(None)(self.callback_a))
+        wiringpi2.wiringPiISR(self.pin_a, wiringpi2.InterruptModes.INT_EDGE_FALLING, CFUNCTYPE(None)(self.callback_b))
 
     def __exit__(self, *enc):
         pass

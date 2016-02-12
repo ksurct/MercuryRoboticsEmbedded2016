@@ -1,7 +1,7 @@
 from ctypes import cdll, c_int, CFUNCTYPE
 from enum import Enum, IntEnum
 
-libwiringpi = cdll.LoadLibrary('libwiringPi.so.2.31')
+libwiringpi = cdll.LoadLibrary('libwiringPi.so.2.25')
 
 
 def _wrap(args, result):
@@ -58,6 +58,11 @@ def wiringPiSetupPhys():
 
 @_wrap([c_int, c_int], None)
 def pinModeAlt(pin, mode):
+    pass
+
+
+@_wrap([c_int], None)
+def pwmSetClock(speed):
     pass
 
 
