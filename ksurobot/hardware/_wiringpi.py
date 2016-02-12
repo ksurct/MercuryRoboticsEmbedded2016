@@ -4,6 +4,9 @@ from enum import Enum, IntEnum
 libwiringpi = cdll.LoadLibrary('libwiringPi.so.2.25')
 
 
+wiringPiISR_cb = CFUNCTYPE(None)
+
+
 def _wrap(args, result):
     def _w(func):
         func = getattr(libwiringpi, func.__name__)
@@ -91,6 +94,6 @@ def pwmWrite(pin, value):
     pass
 
 
-@_wrap([c_int, c_int, CFUNCTYPE(None)], None)
+@_wrap([c_int, c_int, wiringPiISR_cb], None)
 def wiringPiISR(pin, mode, callback):
     pass
