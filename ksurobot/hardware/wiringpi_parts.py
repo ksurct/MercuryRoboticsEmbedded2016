@@ -1,7 +1,7 @@
 from contextlib import ExitStack
 # import _wiringpi2
 
-from ._wiringpi import c_libs as wiringpi2
+from . import _wiringpi as wiringpi2
 
 
 class WPRobotBase(object):
@@ -29,7 +29,7 @@ class WPLED(object):
         self.pin = num
 
     def __enter__(self):
-        wiringpi2.pinMode(self.pin, wiringpi2.GPIO.OUTPUT)
+        wiringpi2.pinMode(self.pin, wiringpi2.PinModes.OUTPUT)
         self.set(False)
 
     def __exit__(self, *enc):
@@ -49,10 +49,10 @@ class WPMotor(object):
         self.speed_pin = speed_pin
 
     def __enter__(self):
-        wiringpi2.pinMode(self.dir_pin_a, wiringpi2.GPIO.OUTPUT)
-        wiringpi2.pinMode(self.dir_pin_b, wiringpi2.GPIO.OUTPUT)
-        wiringpi2.pinMode(self.speed_pin, wiringpi2.GPIO.PWM_OUTPUT)
-        wiringpi2.pwmSetClock(10000)
+        wiringpi2.pinMode(self.dir_pin_a, wiringpi2.PinModes.OUTPUT)
+        wiringpi2.pinMode(self.dir_pin_b, wiringpi2.PinModes.OUTPUT)
+        wiringpi2.pinMode(self.speed_pin, wiringpi2.PinModes.PWM_OUTPUT)
+        self.set_feq(10000)
         self.set(0)
 
     def __exit__(self, *enc):
@@ -70,17 +70,15 @@ class WPMotor(object):
         wiringpi2.pwmWrite(self.speed_pin, speed)
 
     def set_feq(self, feq):
-        pass
-        # self.speed_pwm.ChangeFrequency(feq)
+        wiringpi2.pwmSetClock(feq)
 
     def set_brake(self, type):
-        pass
-        # if type == 0:
-        #     GPIO.output(self.dir_pin_a, False)
-        #     GPIO.output(self.dir_pin_b, False)
-        # else:  # Maybe better
-        #     GPIO.output(self.dir_pin_a, True)
-        #     GPIO.output(self.dir_pin_b, True)
+        if type == 0:
+            wiringpi2.digitalWrite(self.dir_pin_a, 0)
+            wiringpi2.digitalWrite(self.dir_pin_b, 0)
+        else:  # Maybe better
+            wiringpi2.digitalWrite(self.dir_pin_a, 1)
+            wiringpi2.digitalWrite(self.dir_pin_b, 1)
 
     def get(self):
         return 0
@@ -92,9 +90,8 @@ class WPSpeedEncoder(object):
         self.pin_b = pin_b
 
     def __enter__(self):
-        pass
-        # wiringpi2.wiringPiISR(self.pin_a, wiringpi2.GPIO.INT_EDGE_FALLING, self.callback_a)
-        # wiringpi2.wiringPiISR(self.pin_a, wiringpi2.GPIO.INT_EDGE_FALLING, self.callback_b)
+        wiringpi2.wiringPiISR(self.pin_a, wiringpi2.PinModes.INT_EDGE_FALLING, self.callback_a)
+        wiringpi2.wiringPiISR(self.pin_a, wiringpi2.PinModes.INT_EDGE_FALLING, self.callback_b)
 
     def __exit__(self, *enc):
         pass
