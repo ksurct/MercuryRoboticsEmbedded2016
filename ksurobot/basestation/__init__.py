@@ -13,7 +13,7 @@ async def run():
 
     Controller.init()
     controller = Controller(0)
-    async with websockets.connect('ws://raspberrypi.local:5678') as websocket:
+    async with websockets.connect('ws://raspberrypi.local:8002') as websocket:
         while True:
             controller.update()
 

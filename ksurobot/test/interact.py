@@ -13,7 +13,7 @@ class Websocket(object):
         self.ws = None
 
     def connect(self):
-        self.ws = self.loop.run_until_complete(websockets.connect('ws://localhost:5678/'))
+        self.ws = self.loop.run_until_complete(websockets.connect('ws://localhost:8002/'))
 
     def send(self, msg):
         assert self.ws, 'Not connected'
