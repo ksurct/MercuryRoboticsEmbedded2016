@@ -99,9 +99,11 @@ class WebsocketServer(object):
 
     @asyncio.coroutine
     def handle(self, ws, path):
+        logger.info("WS connection open")
         while True:
             result = yield from ws.recv()
             if result is None:
+                logger.info("WS connection close")
                 return
             self.queue.put(result)
 
