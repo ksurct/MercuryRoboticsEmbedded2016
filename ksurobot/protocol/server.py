@@ -116,6 +116,7 @@ class Server(object):
         self.context = None
         self.server = None
         self.queue = None
+        self.port = port
 
     def __enter__(self):
         self.context = ExitStack()
