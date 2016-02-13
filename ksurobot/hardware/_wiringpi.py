@@ -1,7 +1,7 @@
 from ctypes import cdll, c_int, CFUNCTYPE
 from enum import Enum, IntEnum
 
-libwiringpi = cdll.LoadLibrary('libwiringPi.so.2.25')
+libwiringpi = cdll.LoadLibrary('libwiringPi.so.2.31')
 
 
 wiringPiISR_cb = CFUNCTYPE(None)
