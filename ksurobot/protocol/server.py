@@ -107,7 +107,7 @@ class WebsocketServer(object):
 
     def server(self):
         logger.info('starting websockets server')
-        start_server = websockets.serve(self.handle, '0.0.0.0', 8002)
+        start_server = websockets.serve(self.handle, '0.0.0.0', self.port)
         return start_server
 
 
@@ -120,7 +120,7 @@ class Server(object):
     def __enter__(self):
         self.context = ExitStack()
         self.context.enter_context(self.event_loop_context())
-        self.server = EventLoopThread([WebsocketServer(self.queue, 8002).server()])
+        self.server = EventLoopThread([WebsocketServer(self.queue, self.port).server()])
         self.context.enter_context(self.server)
         return self
 
