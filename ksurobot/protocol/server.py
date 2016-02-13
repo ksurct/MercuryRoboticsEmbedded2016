@@ -96,14 +96,17 @@ class WebsocketServer(object):
     def __init__(self, queue, port):
         self.queue = queue
         self.port = port
+        self._active_connections = set()
 
     @asyncio.coroutine
     def handle(self, ws, path):
         logger.info("WS connection open")
+        self._active_connections.add(ws)
         while True:
             result = yield from ws.recv()
             if result is None:
                 logger.info("WS connection close")
+                self._active_connections.remove(ws)
                 return
             self.queue.put(result)
 
@@ -112,18 +115,22 @@ class WebsocketServer(object):
         start_server = websockets.serve(self.handle, '0.0.0.0', self.port)
         return start_server
 
+    async def broadcast(self, msg):
+        await asyncio.wait([ws.send(msg) for ws in self._active_connections])
+
 
 class Server(object):
     def __init__(self, port):
         self.context = None
-        self.server = None
+        self.thread = None
         self.queue = None
         self.port = port
+        self.webserver = WebsocketServer(self.queue, self.port)
 
     def __enter__(self):
         self.context = ExitStack()
         self.context.enter_context(self.event_loop_context())
-        self.server = EventLoopThread([WebsocketServer(self.queue, self.port).server()])
+        self.thread = EventLoopThread([self.webserver.server()])
         self.context.enter_context(self.server)
         return self
 
@@ -133,6 +140,9 @@ class Server(object):
     def recv(self):
         result = self.queue.get()
         return result
+
+    def send(self, msg):
+        self.thread.call_soon_threadsafe(self.webserver.broadcast(msg))
 
     @contextmanager
     def event_loop_context(self):
