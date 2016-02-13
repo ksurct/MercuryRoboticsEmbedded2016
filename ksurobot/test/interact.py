@@ -5,6 +5,7 @@ from contextlib import ExitStack
 from ptpython.repl import embed
 
 from ..protocol.proto import main_pb2
+from ..protocol.server import Server
 from ..robot import Robot
 
 class Websocket(object):
@@ -31,6 +32,8 @@ def main():
     with ExitStack() as e:
         r = Robot()
         e.enter_context(r)
+        s = Server(8002)
+        e.enter_context(s)
     # ws = Websocket()
         embed(globals(), locals())
 
