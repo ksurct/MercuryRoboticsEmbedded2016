@@ -1,4 +1,6 @@
 # from .hardware.parts import RobotBase, LED, Motor
+from contextlib import suppress
+
 from .hardware.wiringpi_parts import (
     WPRobotBase as RobotBase,
     WPLED as LED,
@@ -26,10 +28,19 @@ Server = lambda: server_base(8002)
 def main():
     process_setup()
 
-    with Robot() as robot, Server() as server:
+    with Robot() as robot, Server() as server, suppress(KeyboardInterrupt):
         while True:
             msg = RobotMsg()
             msg.ParseFromString(server.recv())
 
             if msg.headlights.update:
                 robot.head_lights.set(msg.headlights.on)
+
+            for motor_str in ('right', 'left'):
+                motor = getattr(robot, 'motor_'+motor_str)
+                msg = getattr(msg, 'motor_'+motor_str)
+                if msg.update:
+                    if msg.breaks:
+                        motor.set_brake(True)
+                    else:
+                        motor.set(msg.speed)
