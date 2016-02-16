@@ -5,7 +5,7 @@ from .hardware.wiringpi_parts import (
     WPMotor as Motor,
     WPSpeedEncoder as SpeedEncoder
 )
-from .protocol.server import Server
+from .protocol.server import Server as server_base
 from .protocol.proto.main_pb2 import Robot as RobotMsg
 from .process_setup import process_setup
 
@@ -20,10 +20,13 @@ class Robot(RobotBase):
         self.motor_right_speed = self.attach_device(SpeedEncoder(24, 23))
 
 
+Server = lambda: server_base(8002)
+
+
 def main():
     process_setup()
 
-    with Robot() as robot, Server(8002) as server:
+    with Robot() as robot, Server() as server:
         while True:
             msg = RobotMsg()
             msg.ParseFromString(server.recv())
