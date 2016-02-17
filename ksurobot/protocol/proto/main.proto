@@ -2,13 +2,15 @@
 message Robot {
     // Message to the robot
     optional LED headlights = 1;
-    optional Motor motor_1 = 2;
-    optional Motor motor_2 = 3;
+    optional Motor motor_left = 2;
+    optional Motor motor_right = 3;
     repeated Procedure procedures = 4;
 
     message Motor {
         optional bool update = 1;
+        // range 0 to 100, as precent of total
         optional int32 speed = 2;
+        optional bool breaks = 3;
     }
     message Servo {
         optional bool update = 1;

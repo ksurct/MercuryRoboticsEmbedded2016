@@ -1,11 +1,13 @@
 # from .hardware.parts import RobotBase, LED, Motor
+from contextlib import suppress
+
 from .hardware.wiringpi_parts import (
     WPRobotBase as RobotBase,
     WPLED as LED,
     WPMotor as Motor,
     WPSpeedEncoder as SpeedEncoder
 )
-from .protocol.server import Server
+from .protocol.server import Server as server_base
 from .protocol.proto.main_pb2 import Robot as RobotMsg
 from .process_setup import process_setup
 
@@ -20,13 +22,25 @@ class Robot(RobotBase):
         self.motor_right_speed = self.attach_device(SpeedEncoder(24, 23))
 
 
+Server = lambda: server_base(8002)
+
+
 def main():
     process_setup()
 
-    with Robot() as robot, Server(8002) as server:
+    with Robot() as robot, Server() as server, suppress(KeyboardInterrupt):
         while True:
             msg = RobotMsg()
             msg.ParseFromString(server.recv())
 
             if msg.headlights.update:
                 robot.head_lights.set(msg.headlights.on)
+
+            for motor_str in ('right', 'left'):
+                motor = getattr(robot, 'motor_'+motor_str)
+                msg = getattr(msg, 'motor_'+motor_str)
+                if msg.update:
+                    if msg.breaks:
+                        motor.set_brake(True)
+                    else:
+                        motor.set(msg.speed)
