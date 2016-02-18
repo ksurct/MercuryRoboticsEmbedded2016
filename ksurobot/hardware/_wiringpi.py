@@ -1,4 +1,4 @@
-from ctypes import cdll, c_int, CFUNCTYPE
+from ctypes import cdll, c_int, CFUNCTYPE, pointer
 from enum import Enum, IntEnum
 
 libwiringpi = cdll.LoadLibrary('libwiringPi.so.2.31')
@@ -96,4 +96,22 @@ def pwmWrite(pin, value):
 
 @_wrap([c_int, c_int, wiringPiISR_cb], None)
 def wiringPiISR(pin, mode, callback):
+    pass
+
+
+# Extentions
+interupts_library = cdll.LoadLibrary('./_wiring_interupts.so')
+
+
+def _wrap(args, result):
+    def _w(func):
+        func = getattr(interupts_library, func.__name__)
+        func.argtypes = args
+        func.restype = result
+        return func
+    return _w
+
+
+@_wrap([pointer(c_int), c_int, c_int], None)
+def setup_speed_pin(int *speed_output, int pin_a, int pin_b):
     pass
