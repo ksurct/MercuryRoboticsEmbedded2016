@@ -142,7 +142,7 @@ class Server(object):
         return result
 
     def send(self, msg):
-        self.thread.call_soon_threadsafe(self.webserver.broadcast(msg))
+        asyncio.run_coroutine_threadsafe(self.webserver.broadcast(msg), self.thread.loop)
 
     @contextmanager
     def event_loop_context(self):
