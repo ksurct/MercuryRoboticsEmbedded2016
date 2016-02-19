@@ -124,8 +124,8 @@ class Server(object):
         self.context = None
         self.thread = None
         self.queue = None
+        self.webserver = None
         self.port = port
-        self.webserver = WebsocketServer(self.queue, self.port)
 
     def __enter__(self):
         self.context = ExitStack()
@@ -148,5 +148,7 @@ class Server(object):
     def event_loop_context(self):
         with ExitStack() as stack:
             stack.callback(lambda: setattr(self, 'queue', None))
+            stack.callback(lambda: setattr(self, 'webserver', None))
             self.queue = Queue()
+            self.webserver = WebsocketServer(self.queue, self.port)
             yield
