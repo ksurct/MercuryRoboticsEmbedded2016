@@ -131,7 +131,7 @@ class Server(object):
         self.context = ExitStack()
         self.context.enter_context(self.event_loop_context())
         self.thread = EventLoopThread([self.webserver.server()])
-        self.context.enter_context(self.server)
+        self.context.enter_context(self.thread)
         return self
 
     def __exit__(self, *enc):
