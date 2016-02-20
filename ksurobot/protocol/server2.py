@@ -61,4 +61,4 @@ class ClientlessWebSocketServer(object):
         return self.queue.get()
 
     async def send(self, msg):
-        await asyncio.gather(*[ws.send(msg) for ws in self._active_connections])
+        await asyncio.wait([ws.send(msg) for ws in self._active_connections])

@@ -46,6 +46,7 @@ class Controller(object):
             await self.server.send(msg)
 
     async def run(self):
+        logger.info('Start main loop')
         await asyncio.wait([
                 self._wait_recv(),
                 self._wait_heartbeat()
