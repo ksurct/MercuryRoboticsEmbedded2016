@@ -1,6 +1,9 @@
+import logging
 import websockets
 from asyncio import Queue
 import asyncio
+
+logger = logging.getLogger(__name__)
 
 
 class RepeatedTask(object):
