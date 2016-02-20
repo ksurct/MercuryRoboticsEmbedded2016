@@ -38,3 +38,4 @@ def main():
         # loop.add_signal_handler(signal.SIGINT, loop.close)
         loop.run_until_complete(server.start_server())
         loop.run_until_complete(controller.run())
+        loop.run_forever()

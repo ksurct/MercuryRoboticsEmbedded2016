@@ -2,7 +2,7 @@ import asyncio
 import logging
 from .protocol.proto.main_pb2 import Robot as RobotMsg, BaseStation as BaseStationMsg
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 
 class Controller(object):
@@ -17,6 +17,7 @@ class Controller(object):
         return b''
 
     def recv(self, msg_):
+        logger.debug('Recv msg {}'.format(msg_))
         msg = RobotMsg()
         msg.ParseFromString(msg_)
 
