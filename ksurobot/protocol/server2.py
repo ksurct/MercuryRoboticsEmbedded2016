@@ -59,5 +59,5 @@ class ClientlessWebSocketServer(object):
     async def recv(self):
         return self.queue.get()
 
-    async def send(self):
+    async def send(self, msg):
         await asyncio.wait([ws.send(msg) for ws in self._active_connections])

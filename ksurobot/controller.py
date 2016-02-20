@@ -17,10 +17,10 @@ class Controller(object):
         msg.ParseFromString(msg_)
 
         if msg.headlights.update:
-            robot.head_lights.set(msg.headlights.on)
+            self.robot.head_lights.set(msg.headlights.on)
 
         for motor_str in ('right', 'left'):
-            motor = getattr(robot, 'motor_'+motor_str)
+            motor = getattr(self.robot, 'motor_'+motor_str)
             msg = getattr(msg, 'motor_'+motor_str)
             if msg.update:
                 if msg.breaks:
@@ -40,7 +40,7 @@ class Controller(object):
             await self.server.send(msg)
 
     async def run(self):
-        await asyncio.wait([
+        await asyncio.gather(
                 self._wait_recv(),
                 self._wait_heartbeat()
-            ])
+            )
