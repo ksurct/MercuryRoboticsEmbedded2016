@@ -1,5 +1,6 @@
 import websockets
-from asyncio import Queue, sleep, ensure_future
+from asyncio import Queue
+import asyncio
 
 
 class RepeatedTask(object):
@@ -14,14 +15,14 @@ class RepeatedTask(object):
 
     async def runtime(self):
         while True:
-            await sleep(self.time)
+            await asyncio.sleep(self.time)
             if not self.running:
                 return
             await self.tick()
 
     async def start(self):
         self.running = True
-        ensure_future(self.runtime())
+        asyncio.ensure_future(self.runtime())
 
     async def stop(self):
         self.running = False
@@ -60,4 +61,4 @@ class ClientlessWebSocketServer(object):
         return self.queue.get()
 
     async def send(self, msg):
-        await asyncio.wait([ws.send(msg) for ws in self._active_connections])
+        await asyncio.gather(*[ws.send(msg) for ws in self._active_connections])
