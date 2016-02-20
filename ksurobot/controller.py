@@ -1,5 +1,8 @@
 import asyncio
+import logging
 from .protocol.proto.main_pb2 import Robot as RobotMsg, BaseStation as BaseStationMsg
+
+logger = logging.getLogger()
 
 
 class Controller(object):
@@ -10,7 +13,8 @@ class Controller(object):
 
     def heart_beat(self):
         msg = BaseStationMsg()
-        return msg.SerializeToString()
+        # return msg.SerializeToString()
+        return b''
 
     def recv(self, msg_):
         msg = RobotMsg()
@@ -29,18 +33,20 @@ class Controller(object):
                     motor.set(msg.speed)
 
     async def _wait_recv(self):
+        logger.info('Start recv loop')
         while True:
             msg = await self.server.recv()
             self.recv(msg)
 
     async def _wait_heartbeat(self):
+        logger.info('Start heartbeat loop')
         while True:
             asyncio.sleep(400)
             msg = self.heart_beat()
             await self.server.send(msg)
 
     async def run(self):
-        await asyncio.gather(
+        await asyncio.wait([
                 self._wait_recv(),
                 self._wait_heartbeat()
-            )
+            ])

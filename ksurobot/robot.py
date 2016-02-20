@@ -35,6 +35,6 @@ def main():
         loop = asyncio.get_event_loop()
         controller = Controller(loop, robot, server)
 
-        loop.add_signal_handler(signal.SIGINT, loop.close)
+        # loop.add_signal_handler(signal.SIGINT, loop.close)
         loop.run_until_complete(server.start_server())
         loop.run_until_complete(controller.run())
