@@ -6,31 +6,6 @@ import asyncio
 logger = logging.getLogger(__name__)
 
 
-class RepeatedTask(object):
-    def __init__(self, time, cmd):
-        self.running = False
-        self.time = time
-        self.cmd = cmd
-        self.current_task = None
-
-    async def tick(self):
-        self.cmd()
-
-    async def runtime(self):
-        while True:
-            await asyncio.sleep(self.time)
-            if not self.running:
-                return
-            await self.tick()
-
-    async def start(self):
-        self.running = True
-        asyncio.ensure_future(self.runtime())
-
-    async def stop(self):
-        self.running = False
-
-
 class ClientlessWebSocketServer(object):
     def __init__(self, port):
         self._active_connections = set()
@@ -58,10 +33,15 @@ class ClientlessWebSocketServer(object):
             await self.handle_msg(result)
 
     async def handle_msg(self, msg):
+        logger.debug("WS enqueue msg")
         await self.queue.put(msg)
 
     async def recv(self):
-        return await self.queue.get()
+        logger.debug("WS wait msg")
+        msg = await self.queue.get()
+        return msg
 
     async def send(self, msg):
-        await asyncio.wait([ws.send(msg) for ws in self._active_connections])
+        # logger.debug("WS seng msg")
+        for ws in self._active_connections:
+            asyncio.ensure_future(ws.send(msg))

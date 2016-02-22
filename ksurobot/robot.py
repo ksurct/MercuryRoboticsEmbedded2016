@@ -13,6 +13,7 @@ from .protocol.server import Server as server_base
 from .protocol.server2 import ClientlessWebSocketServer
 from .process_setup import process_setup
 from .controller import Controller
+from .util import AsyncioLoop, get_config
 
 
 class Robot(RobotBase):
@@ -24,18 +25,16 @@ class Robot(RobotBase):
         self.motor_right = self.attach_device(Motor(17, 16, 13))
         self.motor_right_speed = self.attach_device(SpeedEncoder(24, 23))
 
-Server = lambda: server_base(8002)
-
 
 def main():
+    config = get_config()
     process_setup()
 
     with Robot() as robot:
-        server = ClientlessWebSocketServer(8002)
+        server = ClientlessWebSocketServer(config.port)
         loop = asyncio.get_event_loop()
         controller = Controller(loop, robot, server)
 
-        # loop.add_signal_handler(signal.SIGINT, loop.close)
-        loop.run_until_complete(server.start_server())
-        loop.run_until_complete(controller.run())
-        loop.run_forever()
+        with AsyncioLoop() as loop:
+            loop.submit(server.start_server())
+            loop.submit(controller.run())

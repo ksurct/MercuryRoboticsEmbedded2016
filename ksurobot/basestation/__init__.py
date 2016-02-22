@@ -1,19 +1,24 @@
 from .controller import Controller
 from ..protocol.proto.main_pb2 import Robot as RobotMessage
+from ..util import get_config
 import asyncio
 import websockets
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Robot(object):
     headlights = False
 
 
-async def run():
+async def run(url):
+    logger.info('Connecting to {}'.format(url))
     robot_state = Robot()
 
     Controller.init()
     controller = Controller(0)
-    async with websockets.connect('ws://raspberrypi.local:8002') as websocket:
+    async with websockets.connect(url) as websocket:
         while True:
             controller.update()
 
@@ -31,17 +36,6 @@ async def run():
 
 
 def main():
+    config = get_config()
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(run())
-
-
-# async def tick():
-#     await hello()
-#
-#     await asyncio.sleep(1.1)
-#     asyncio.ensure_future(tick())
-#
-#
-# def main():
-#     asyncio.ensure_future(tick())
-#     asyncio.get_event_loop().run_forever()
+    loop.run_until_complete(run("ws://{0.addr}:{0.port}".format(config)))

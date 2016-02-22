@@ -11,10 +11,9 @@ class Controller(object):
         self.server = server
         self.loop = loop
 
-    def heart_beat(self):
+    def heartbeat(self):
         msg = BaseStationMsg()
-        # return msg.SerializeToString()
-        return b''
+        return msg.SerializeToString()
 
     def recv(self, msg_):
         logger.debug('Recv msg {}'.format(msg_))
@@ -26,12 +25,12 @@ class Controller(object):
 
         for motor_str in ('right', 'left'):
             motor = getattr(self.robot, 'motor_'+motor_str)
-            msg = getattr(msg, 'motor_'+motor_str)
-            if msg.update:
-                if msg.breaks:
+            msg_motor = getattr(msg, 'motor_'+motor_str)
+            if msg_motor.update:
+                if msg_motor.breaks:
                     motor.set_brake(True)
                 else:
-                    motor.set(msg.speed)
+                    motor.set(msg_motor.speed)
 
     async def _wait_recv(self):
         logger.info('Start recv loop')
@@ -42,13 +41,11 @@ class Controller(object):
     async def _wait_heartbeat(self):
         logger.info('Start heartbeat loop')
         while True:
-            asyncio.sleep(400)
-            msg = self.heart_beat()
+            await asyncio.sleep(400)
+            msg = self.heartbeat()
             await self.server.send(msg)
 
     async def run(self):
         logger.info('Start main loop')
-        await asyncio.wait([
-                self._wait_recv(),
-                self._wait_heartbeat()
-            ])
+        asyncio.ensure_future(self._wait_recv())
+        asyncio.ensure_future(self._wait_heartbeat())
