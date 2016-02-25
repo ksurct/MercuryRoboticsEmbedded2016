@@ -24,13 +24,12 @@ class ClientlessWebSocketServer(object):
     async def handle_new_connection(self, ws, path):
         logger.info("WS connection open")
         self._active_connections.add(ws)
-        while True:
-            result = await ws.recv()
-            if result is None:
-                logger.info("WS connection close")
-                self._active_connections.remove(ws)
-                return
-            await self.handle_msg(result)
+        with suppress(websockets.ConnectionClosed):
+            while True:
+                result = await ws.recv()
+                await self.handle_msg(result)
+        logger.info("WS connection close")
+        self._active_connections.remove(ws)
 
     async def handle_msg(self, msg):
         logger.debug("WS enqueue msg")

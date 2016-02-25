@@ -8,26 +8,75 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class Robot(object):
-    headlights = False
+class Component(object):
+    def __init__(self, **kwargs):
+        self.parts = kwargs
+        self.state = {k: None for k in kwargs}
 
+    def check_updates(self, msg):
+        needs_update = False
+        for k, v in self.parts.items():
+            new_value = v()
+            old_value = self.state[k]
+            if new_value != old_value:
+                needs_update = True
+                setattr(msg, k, new_value)
+                msg.update = True
+
+            self.state[k] = new_value
+        return needs_update
+
+
+class RobotState(object):
+    def __init__(self, controller):
+        self.controller = controller
+
+        self.headlights = Component(on=controller.get_y)
+        self.motor_right = Component(
+            speed=self.calculate_motor_speed,
+            breaks=controller.get_b)
+        self.motor_left = Component(
+            speed=lambda: int(controller.get_left_x() * 100),
+            breaks=controller.get_b)
+
+    def _neg(self, num):
+        if num < 0:
+            return -1
+        return 1
+
+    def calculate_motor_speed(self):
+        x = self.controller.get_left_x()
+        y = self.controller.get_left_y()
+
+        forward_value = abs(int((abs(y) - abs(x)) * 100))
+
+        if abs(x) > abs(y) or y > 0:
+            if x > 0:
+                forward_value *= -1
+        #     100 + forward_value
+
+        print(
+            forward_value
+        )
+        return int(x)
 
 async def run(url):
     logger.info('Connecting to {}'.format(url))
-    robot_state = Robot()
 
     Controller.init()
     controller = Controller(0)
+
+    robot_state = RobotState(controller)
+
     async with websockets.connect(url) as websocket:
         while True:
             controller.update()
 
             robot_msg = RobotMessage()
 
-            if robot_state.headlights != controller.get_y():
-                robot_state.headlights = controller.get_y()
-                robot_msg.headlights.update = True
-                robot_msg.headlights.on = robot_state.headlights
+            robot_state.headlights.check_updates(robot_msg.headlights)
+            robot_state.motor_right.check_updates(robot_msg.motor_right)
+            robot_state.motor_left.check_updates(robot_msg.motor_left)
 
             ser_msg = robot_msg.SerializeToString()
 

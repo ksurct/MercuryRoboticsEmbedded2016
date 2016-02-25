@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from contextlib import suppress
 from .protocol.proto.main_pb2 import Robot as RobotMsg, BaseStation as BaseStationMsg
 
 logger = logging.getLogger(__name__)
