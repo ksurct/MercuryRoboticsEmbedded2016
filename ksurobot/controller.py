@@ -14,6 +14,11 @@ class Controller(object):
 
     def heartbeat(self):
         msg = BaseStationMsg()
+        msg.sensor_data.update = True
+        msg.sensor_data.front_left = 3
+        msg.sensor_data.front_right = 4
+        msg.sensor_data.back_left = 5
+        msg.sensor_data.back_right = 6
         return msg.SerializeToString()
 
     def recv(self, msg_):

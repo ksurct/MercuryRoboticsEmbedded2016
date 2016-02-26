@@ -1,3 +1,5 @@
+option java_package = "ksurctjavacode";
+
 message Robot {
     // Message to the robot
     optional LED headlights = 1;
