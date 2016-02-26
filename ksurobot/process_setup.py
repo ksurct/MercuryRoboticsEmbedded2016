@@ -10,7 +10,7 @@ def process_setup():
         'formatters': {
             'long': {
                 'format':
-                    '%(relativeCreated)d %(threadName)-12s  %(levelname)-8s %(name)-12s %(message)s'
+                    '%(relativeCreated)d %(threadName)-12s  %(levelname)-5s %(name)-20s %(message)s'
             },
             'brief': {
                 'format':
@@ -30,9 +30,14 @@ def process_setup():
                 'handlers': ['console'],
                 'level': logging.DEBUG,
             },
+            'websockets.server': {
+                'propagate': False,
+                'handlers': ['console'],
+                'level': logging.DEBUG,
+            },
         },
         'root': {
             'handlers': ['console'],
-            'level': logging.DEBUG,
+            'level': logging.INFO,
         },
     })

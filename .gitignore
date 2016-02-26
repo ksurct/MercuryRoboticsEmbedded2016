@@ -1,7 +1,7 @@
 /result
 /output.tar*
 *_pb2.py
-/ksurobot/protocol/proto/Main.java
+/ksurobot/protocol/proto/ksurctjavacode
 /_build
 
 *.swp
