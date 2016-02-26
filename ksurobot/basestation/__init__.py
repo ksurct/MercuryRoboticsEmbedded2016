@@ -1,3 +1,4 @@
+from contextlib import suppress
 from .controller import Controller
 from ..protocol.proto.main_pb2 import Robot as RobotMessage
 from ..util import get_config
@@ -55,9 +56,6 @@ class RobotState(object):
                 forward_value *= -1
         #     100 + forward_value
 
-        print(
-            forward_value
-        )
         return int(x)
 
 async def run(url):
@@ -81,7 +79,10 @@ async def run(url):
             ser_msg = robot_msg.SerializeToString()
 
             await websocket.send(ser_msg)
-            await asyncio.sleep(.1)
+
+            with suppress(asyncio.TimeoutError):
+                msg = await asyncio.wait_for(websocket.recv(), .1)
+                print(msg)
 
 
 def main():

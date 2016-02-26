@@ -1,4 +1,4 @@
-from ctypes import cdll, c_int, CFUNCTYPE
+from ctypes import cdll, c_int, CFUNCTYPE, c_ubyte, POINTER
 from enum import Enum, IntEnum
 
 from ..util import get_config
@@ -34,6 +34,7 @@ libwiringpi = Wrapper('libwiringPi.so.2.31')
 
 wiringPiISR_cb = CFUNCTYPE(None)
 
+wiringPiPiSPIDataRW_data = POINTER(c_ubyte)
 
 class PinModes(IntEnum):
     INPUT = 0
@@ -115,4 +116,14 @@ def pwmWrite(pin, value):
 
 @libwiringpi.wrap([c_int, c_int, wiringPiISR_cb], None)
 def wiringPiISR(pin, mode, callback):
+    pass
+
+
+@libwiringpi.wrap([c_int, c_int], c_int)
+def wiringPiSPISetup (channel, speed):
+    pass
+
+
+@libwiringpi.wrap([c_int, wiringPiPiSPIDataRW_data, c_int], c_int)
+def wiringPiSPIDataRW (channel, data, len):
     pass

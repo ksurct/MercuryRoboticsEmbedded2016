@@ -42,7 +42,7 @@ class Controller(object):
     async def _wait_heartbeat(self):
         logger.info('Start heartbeat loop')
         while True:
-            await asyncio.sleep(400)
+            await asyncio.sleep(.3)
             msg = self.heartbeat()
             await self.server.send(msg)
 
