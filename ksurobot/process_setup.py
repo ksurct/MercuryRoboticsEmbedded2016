@@ -30,11 +30,11 @@ def process_setup():
                 'handlers': ['console'],
                 'level': logging.DEBUG,
             },
-            # 'websockets': {
-            #     'propagate': False,
-            #     'handlers': ['console'],
-            #     'level': logging.DEBUG,
-            # },
+            'websockets.server': {
+                'propagate': False,
+                'handlers': ['console'],
+                'level': logging.DEBUG,
+            },
         },
         'root': {
             'handlers': ['console'],

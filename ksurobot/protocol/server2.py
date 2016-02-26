@@ -1,4 +1,5 @@
 import logging
+from contextlib import suppress
 import websockets
 from asyncio import Queue
 import asyncio
