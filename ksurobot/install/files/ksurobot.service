@@ -1,2 +1,5 @@
 [Service]
 ExecStart={service_cmd}
+
+[Install]
+WantedBy=multi-user.target
