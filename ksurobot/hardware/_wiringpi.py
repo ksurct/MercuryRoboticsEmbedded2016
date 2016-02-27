@@ -1,20 +1,40 @@
-from ctypes import cdll, c_int, CFUNCTYPE
+from ctypes import cdll, c_int, CFUNCTYPE, c_ubyte, POINTER
 from enum import Enum, IntEnum
 
-libwiringpi = cdll.LoadLibrary('libwiringPi.so.2.31')
+from ..util import get_config
 
+
+class Wrapper(object):
+    def __init__(self, library):
+        self.library_name = library
+        self.library = None
+
+    def load(self):
+        if self.library is None:
+            config = get_config()
+            if config.emulate:
+                self.library = False
+            else:
+                self.library = cdll.LoadLibrary(self.library_name)
+
+        return self.library
+
+    def wrap(self, args, result):
+        lib = self.load()
+        def _w(func):
+            if lib:
+                func = getattr(lib, func.__name__)
+                func.argtypes = args
+                func.restype = result
+            return func
+        return _w
+
+
+libwiringpi = Wrapper('libwiringPi.so.2.31')
 
 wiringPiISR_cb = CFUNCTYPE(None)
 
-
-def _wrap(args, result):
-    def _w(func):
-        func = getattr(libwiringpi, func.__name__)
-        func.argtypes = args
-        func.restype = result
-        return func
-    return _w
-
+wiringPiPiSPIDataRW_data = POINTER(c_ubyte)
 
 class PinModes(IntEnum):
     INPUT = 0
@@ -39,61 +59,71 @@ class InterruptModes(IntEnum):
     INT_EDGE_BOTH = 3
 
 
-@_wrap([], None)
+@libwiringpi.wrap([], None)
 def wiringPiSetup():
     pass
 
 
-@_wrap([], None)
+@libwiringpi.wrap([], None)
 def wiringPiSetupSys():
     pass
 
 
-@_wrap([], None)
+@libwiringpi.wrap([], None)
 def wiringPiSetupGpio():
     pass
 
 
-@_wrap([], None)
+@libwiringpi.wrap([], None)
 def wiringPiSetupPhys():
     pass
 
 
-@_wrap([c_int, c_int], None)
+@libwiringpi.wrap([c_int, c_int], None)
 def pinModeAlt(pin, mode):
     pass
 
 
-@_wrap([c_int], None)
+@libwiringpi.wrap([c_int], None)
 def pwmSetClock(speed):
     pass
 
 
-@_wrap([c_int, c_int], None)
+@libwiringpi.wrap([c_int, c_int], None)
 def pinMode(pin, mode):
     pass
 
 
-@_wrap([c_int, c_int], None)
+@libwiringpi.wrap([c_int, c_int], None)
 def pullUpDnControl(pin, pud):
     pass
 
 
-@_wrap([c_int], c_int)
+@libwiringpi.wrap([c_int], c_int)
 def digitalRead(pin):
     pass
 
 
-@_wrap([c_int, c_int], None)
+@libwiringpi.wrap([c_int, c_int], None)
 def digitalWrite(pin, value):
     pass
 
 
-@_wrap([c_int, c_int], None)
+@libwiringpi.wrap([c_int, c_int], None)
 def pwmWrite(pin, value):
     pass
 
 
-@_wrap([c_int, c_int, wiringPiISR_cb], None)
+@libwiringpi.wrap([c_int, c_int, wiringPiISR_cb], None)
 def wiringPiISR(pin, mode, callback):
+    pass
+
+
+@libwiringpi.wrap([c_int, c_int], c_int)
+def wiringPiSPISetup (channel, speed):
+    pass
+
+
+@libwiringpi.wrap([c_int, wiringPiPiSPIDataRW_data, c_int], c_int)
+def wiringPiSPIDataRW (channel, data, len):
     pass

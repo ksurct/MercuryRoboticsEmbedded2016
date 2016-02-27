@@ -1,47 +1,91 @@
+from contextlib import suppress
 from .controller import Controller
 from ..protocol.proto.main_pb2 import Robot as RobotMessage
+from ..util import get_config
 import asyncio
 import websockets
+import logging
+
+logger = logging.getLogger(__name__)
 
 
-class Robot(object):
-    headlights = False
+class Component(object):
+    def __init__(self, **kwargs):
+        self.parts = kwargs
+        self.state = {k: None for k in kwargs}
+
+    def check_updates(self, msg):
+        needs_update = False
+        for k, v in self.parts.items():
+            new_value = v()
+            old_value = self.state[k]
+            if new_value != old_value:
+                needs_update = True
+                setattr(msg, k, new_value)
+                msg.update = True
+
+            self.state[k] = new_value
+        return needs_update
 
 
-async def run():
-    robot_state = Robot()
+class RobotState(object):
+    def __init__(self, controller):
+        self.controller = controller
+
+        self.headlights = Component(on=controller.get_y)
+        self.motor_right = Component(
+            speed=self.calculate_motor_speed,
+            breaks=controller.get_b)
+        self.motor_left = Component(
+            speed=lambda: int(controller.get_left_x() * 100),
+            breaks=controller.get_b)
+
+    def _neg(self, num):
+        if num < 0:
+            return -1
+        return 1
+
+    def calculate_motor_speed(self):
+        x = self.controller.get_left_x()
+        y = self.controller.get_left_y()
+
+        forward_value = abs(int((abs(y) - abs(x)) * 100))
+
+        if abs(x) > abs(y) or y > 0:
+            if x > 0:
+                forward_value *= -1
+        #     100 + forward_value
+
+        return int(x)
+
+async def run(url):
+    logger.info('Connecting to {}'.format(url))
 
     Controller.init()
     controller = Controller(0)
-    async with websockets.connect('ws://raspberrypi.local:8002') as websocket:
+
+    robot_state = RobotState(controller)
+
+    async with websockets.connect(url) as websocket:
         while True:
             controller.update()
 
             robot_msg = RobotMessage()
 
-            if robot_state.headlights != controller.get_y():
-                robot_state.headlights = controller.get_y()
-                robot_msg.headlights.update = True
-                robot_msg.headlights.on = robot_state.headlights
+            robot_state.headlights.check_updates(robot_msg.headlights)
+            robot_state.motor_right.check_updates(robot_msg.motor_right)
+            robot_state.motor_left.check_updates(robot_msg.motor_left)
 
             ser_msg = robot_msg.SerializeToString()
 
             await websocket.send(ser_msg)
-            await asyncio.sleep(.1)
+
+            with suppress(asyncio.TimeoutError):
+                msg = await asyncio.wait_for(websocket.recv(), .1)
+                print(msg)
 
 
 def main():
+    config = get_config()
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(run())
-
-
-# async def tick():
-#     await hello()
-#
-#     await asyncio.sleep(1.1)
-#     asyncio.ensure_future(tick())
-#
-#
-# def main():
-#     asyncio.ensure_future(tick())
-#     asyncio.get_event_loop().run_forever()
+    loop.run_until_complete(run("ws://{0.addr}:{0.port}".format(config)))
