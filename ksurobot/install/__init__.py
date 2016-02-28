@@ -5,7 +5,7 @@ from sys import executable, argv
 def create_service():
     service_template = get_data(__package__, '/files/ksurobot.service').decode('UTF-8')
 
-    service_cmd = "{} -m ksurobot.main robot".format(executable)
+    service_cmd = "{} -m ksurobot robot".format(executable)
 
     service = service_template.format(**locals())
 

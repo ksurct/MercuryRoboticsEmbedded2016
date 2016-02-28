@@ -1,4 +1,9 @@
 import argparse
+from .util import get_config
+from .process_setup import process_setup
+
+DEFAULT_PORT = 8002
+DEFAULT_ADDR = 'raspberrypi.local'
 
 
 def run_basestation(ns):
@@ -22,6 +27,10 @@ def run_interact(ns):
 
 
 parser = argparse.ArgumentParser(prog='ksurobot')
+parser.add_argument('--port', default=DEFAULT_PORT)
+parser.add_argument('--addr', default=DEFAULT_ADDR)
+parser.add_argument('--emulate', action='store_true')
+
 subparser = parser.add_subparsers()
 
 basestation_parser = subparser.add_parser('basestation')
@@ -38,5 +47,6 @@ interact_parser.set_defaults(func=run_interact)
 
 
 def main():
-    args = parser.parse_args()
+    process_setup()
+    args = get_config()
     args.func(args)
