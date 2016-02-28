@@ -124,14 +124,14 @@ class Server(object):
         self.context = None
         self.thread = None
         self.queue = None
+        self.webserver = None
         self.port = port
-        self.webserver = WebsocketServer(self.queue, self.port)
 
     def __enter__(self):
         self.context = ExitStack()
         self.context.enter_context(self.event_loop_context())
         self.thread = EventLoopThread([self.webserver.server()])
-        self.context.enter_context(self.server)
+        self.context.enter_context(self.thread)
         return self
 
     def __exit__(self, *enc):
@@ -142,11 +142,13 @@ class Server(object):
         return result
 
     def send(self, msg):
-        self.thread.call_soon_threadsafe(self.webserver.broadcast(msg))
+        asyncio.run_coroutine_threadsafe(self.webserver.broadcast(msg), self.thread.loop)
 
     @contextmanager
     def event_loop_context(self):
         with ExitStack() as stack:
             stack.callback(lambda: setattr(self, 'queue', None))
+            stack.callback(lambda: setattr(self, 'webserver', None))
             self.queue = Queue()
+            self.webserver = WebsocketServer(self.queue, self.port)
             yield

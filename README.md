@@ -19,8 +19,12 @@ This should run in unix. Probably will not run on windows.
 
 # Commandline
 There is a commandline app for interacting with the robot remotely.
-
-## Usage
 - Run `pip install ptpython`. This will install the excellent ptpython module
   which is also useful on its own.
-- Run `sudo $(which ksurobot) interact`
+- Run `sudo ~/Code/python-venv/bin/ksurobot interact`. This will run initialization
+  put you into a command prompt.
+
+## Usage
+- The `r` variable contains the Robot object and the  `s` variable is the
+  Server object, as defined in 'ksurobot/robot.py'. You can, for example,
+  set the right motor speed using `r.motor_right.set(20)`.
