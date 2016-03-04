@@ -1,0 +1,11 @@
+https://www.python.org/ftp/python/3.5.1/Python-3.5.1.tar.xz
+    out=Python.tar.xz
+    checksum=sha-256=c6d57c0c366d9060ab6c0cdf889ebf3d92711d466cc0119c441dbf2746f725c9
+
+https://git.drogon.net/?p=wiringPi;a=snapshot;h=78b5c323b74de782df58ee558c249e4e4fadd25f;sf=tgz
+    out=wiringPi.tar.gz
+    checksum=sha-256=5bac71165e736fcdedac3b61380b11a96b8a5c3c2900f9cdeb008bfc39833feb
+
+https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz
+    out=protobuf.tar.gz
+    checksum=sha-256=dbbd7bdd2381633995404de65a945ff1a7610b0da14593051b4738c90c6dd164

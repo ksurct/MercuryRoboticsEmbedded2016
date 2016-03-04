@@ -1,0 +1,5 @@
+dir=_build/downloads
+continue=true
+allow-overwrite=true
+max-concurrent-downloads=3
+input-file=downloads.txt

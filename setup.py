@@ -9,7 +9,7 @@ setup(
     install_requires=[
         'websockets==3.0',
         'pyserial==3.0.1',
-        # 'pysdl2',
+        'setproctitle==1.1.9',
     ],
     entry_points={
         'console_scripts': [
