@@ -4,7 +4,7 @@ control = Controller()
 
 class Servo:
 
-    def __init__(self, my_id, rotation, initPos = 0, x = 3000):
+    def __init__(self, my_id, rotation, initPos = 0, x = 3990):
         """
         my_id = the ID of the servo
         rotation = the max rotation angle that the servo can go to
@@ -16,14 +16,17 @@ class Servo:
         self.x = x
         #TODO Test to see if the position of the servo in relation to the pulse
         #     width is linear or not
-        self.y = 6000/rotation
-        self.controller.setRange(self.num, 0, 0)
-        self.controller.setSpeed(self.num, 0)
-        self.controller.setAccel(self.num, 0)
-        setAngle(initPos)
+        self.y = 7910
+        self.controller.setRange(self.my_id, 0, 0)
+        self.controller.setSpeed(self.my_id, 0)
+        self.controller.setAccel(self.my_id, 0)
+        self.setAngle(initPos)
 
     def setAngle(self, degrees):
-        self.controller.setTarget(self.my_id, conv(degrees))
+        self.controller.setTarget(self.my_id, self.conv(degrees))
+
+    def setTarget(self, target):
+        self.controller.setTarget(self.my_id, target)
 
     def getPos(self):
         return self.controller.getPosition(self.my_id)
@@ -32,8 +35,8 @@ class Servo:
         return self.controller.isMoving(self.my_id)
 
     def getMyID(self):
-        return my_id;
+        return self.my_id;
 
-    def conv(degrees):
+    def conv(self, degrees):
         #TODO Check to make sure these values are correct
-        return int(self.x + degrees * self.y)
+        return int(self.x + degrees * ((self.y - self.x)/(90)))
