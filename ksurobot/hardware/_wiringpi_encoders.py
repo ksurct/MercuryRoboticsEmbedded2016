@@ -6,6 +6,6 @@ from .utils import Wrapper
 wiring_interupts = Wrapper(str(Path(__file__).parent/'_wiring_encoders.so'))
 
 
-wiring_interupts.wrap([POINTER(c_long), POINTER(c_char), c_int, c_int], None)
+@wiring_interupts.wrap([POINTER(c_long), POINTER(c_char), c_int, c_int], None)
 def setup_speed_pin(last_tick, state, pin_a, pin_b):
     pass

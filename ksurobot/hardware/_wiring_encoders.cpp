@@ -18,8 +18,8 @@ public:
     }
 
 private:
-    long int last_tick;
-    char state;
+    long int *last_tick;
+    char *state;
 
     void callback() {
         char new_state;

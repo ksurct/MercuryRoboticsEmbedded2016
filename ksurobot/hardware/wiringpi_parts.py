@@ -2,7 +2,8 @@ from contextlib import ExitStack
 # import _wiringpi2
 
 from . import _wiringpi as wiringpi2
-from ctypes import CFUNCTYPE
+from ._wiringpi_encoders import setup_speed_pin
+from ctypes import CFUNCTYPE, pointer, c_byte, c_long
 
 class WPRobotBase(object):
     def __init__(self):
@@ -105,3 +106,24 @@ class WPSpeedEncoder(object):
     def callback_b():
         pass
         # print('callback_b')
+
+
+class CSpeedEncoder(object):
+    def __init__(self, pin_a, pin_b):
+        self.pin_a = pin_a
+        self.pin_b = pin_b
+
+        self.state = c_byte()
+        self.last_tick = c_long()
+
+    def __enter__(self):
+        setup_speed_pin(pointer(self.last_tick), pointer(self.state), self.pin_a, self.pin_b)
+        return self
+
+    def __exit__(self):
+        pass
+
+    def get(self):
+        forward = 1 if self.state.value() else -1
+        
+        return 0
