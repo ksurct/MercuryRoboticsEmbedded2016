@@ -39,6 +39,7 @@ function build_protobuf() {(
 function build_virtualenv() {(
     python3.5 -m venv virtualenv
     source ./virtualenv/bin/activate
+    make
     pip install -e ../..
 )}
 
