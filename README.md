@@ -4,25 +4,28 @@ Embedded system code for the Mercury Robotics Competition 2016
 http://ksurct.herokuapp.com/
 
 # Quick start
-This should run in unix. Probably will not run on windows.
+This should run in unix. Will not run on windows.
 
-- Install [python3.5](https://www.python.org/downloads/).
-- Create a virtual environment by running `python3.5 -m venv .python-venv`.
-  This creates an isolated python environment with its own set of packages.
+- `cd` into 'MercuryRoboticsEmbedded2016'
+- Run `./first_time_setup.sh`. This will take a while to run. Be cautious about
+  running this on a personal machine.
 - Activate the virtual environment. __You will need to do this every time
-  you open a terminal!__. Run `source ./.python-venv/bin/activate`.
-- Install some packages. Run `pip install -r ./requirements.txt`.
-- Install protobuf. Follow [these instructions](https://github.com/google/protobuf).  
+  you open a terminal!__. Run `source ./installer/_build/virtualenv/bin/activate`.
 - Make the protobuf files. Run `make`.
-- Install program with `pip install -e .`
 - Run the program with `sudo $(which ksurobot) robot`
+
+# Development
+
+- Activate the virtualenv.
+- Run `pip install -r requirements.txt`. This will install python packages used in
+  development.
 
 # Commandline
 There is a commandline app for interacting with the robot remotely.
 - Run `pip install ptpython`. This will install the excellent ptpython module
   which is also useful on its own.
-- Run `sudo ~/Code/python-venv/bin/ksurobot interact`. This will run initialization
-  put you into a command prompt.
+- Run `sudo ~/Code/MercuryRoboticsEmbedded2016/installer/_build/virtualenv/bin/ksurobot interact`.
+  This will run initialization put you into a command prompt.
 
 ## Usage
 - The `r` variable contains the Robot object and the  `s` variable is the
