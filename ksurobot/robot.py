@@ -1,5 +1,7 @@
 # from .hardware.parts import RobotBase, LED, Motor
 from contextlib import suppress
+import asyncio
+import signal
 
 from .hardware.wiringpi_parts import (
     WPRobotBase as RobotBase,
@@ -8,8 +10,10 @@ from .hardware.wiringpi_parts import (
     WPSpeedEncoder as SpeedEncoder
 )
 from .protocol.server import Server as server_base
-from .protocol.proto.main_pb2 import Robot as RobotMsg
+from .protocol.server2 import ClientlessWebSocketServer
 from .process_setup import process_setup
+from .controller import Controller
+from .util import AsyncioLoop, get_config
 
 
 class Robot(RobotBase):
@@ -22,25 +26,15 @@ class Robot(RobotBase):
         self.motor_right_speed = self.attach_device(SpeedEncoder(24, 23))
 
 
-Server = lambda: server_base(8002)
-
-
 def main():
+    config = get_config()
     process_setup()
 
-    with Robot() as robot, Server() as server, suppress(KeyboardInterrupt):
-        while True:
-            msg = RobotMsg()
-            msg.ParseFromString(server.recv())
+    with Robot() as robot:
+        server = ClientlessWebSocketServer(config.port)
+        loop = asyncio.get_event_loop()
+        controller = Controller(loop, robot, server)
 
-            if msg.headlights.update:
-                robot.head_lights.set(msg.headlights.on)
-
-            for motor_str in ('right', 'left'):
-                motor = getattr(robot, 'motor_'+motor_str)
-                msg = getattr(msg, 'motor_'+motor_str)
-                if msg.update:
-                    if msg.breaks:
-                        motor.set_brake(True)
-                    else:
-                        motor.set(msg.speed)
+        with AsyncioLoop() as loop:
+            loop.submit(server.start_server())
+            loop.submit(controller.run())
