@@ -9,6 +9,8 @@ setup(
     install_requires=[
         'websockets==3.0',
         'pyserial==3.0.1',
+        'setproctitle==1.1.9',
+        'spidev==3.1',
         # 'pysdl2',
     ],
     entry_points={
