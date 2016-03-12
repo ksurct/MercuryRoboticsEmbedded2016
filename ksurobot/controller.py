@@ -38,6 +38,9 @@ class Controller(object):
                 else:
                     motor.set(msg_motor.speed)
 
+    def auto_stop(self):
+        self.robot.dist_bl.get_clean()
+
     async def _wait_recv(self):
         logger.info('Start recv loop')
         while True:
@@ -50,6 +53,12 @@ class Controller(object):
             await asyncio.sleep(.3)
             msg = self.heartbeat()
             await self.server.send(msg)
+
+    async def _wait_auto_stop(self):
+        logger.info('Start auto stop loop')
+        while True:
+            await asyncio.sleep(.5)
+            self.auto_stop()
 
     async def run(self):
         logger.info('Start main loop')
