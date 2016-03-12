@@ -45,13 +45,13 @@ class DistanceSensor(object):
 
     def sample(self):
         with self.lock:
-            self.buffer.append(self.get())
+            self.buffer.append(self.get_raw())
 
-    def get(self):
+    def get_raw(self):
         data = self.spi.xfer2([1,(8+self.channel)<<4,0])
         return data
 
-    def get_clean(self):
+    def get(self):
         with self.lock:
             return sum(self.buffer) / BUFFER_SIZE
 
