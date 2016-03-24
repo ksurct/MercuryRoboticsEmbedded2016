@@ -49,6 +49,7 @@ class DistanceSensor(object):
 
     def get_raw(self):
         data = self.spi.xfer2([1,(8+self.channel)<<4,0])
+        _, m, l = data
         return data
 
     def get(self):

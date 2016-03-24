@@ -1,9 +1,16 @@
 import asyncio
 import logging
 from contextlib import suppress
+from enum import Enum
 from .protocol.proto.main_pb2 import Robot as RobotMsg, BaseStation as BaseStationMsg
 
 logger = logging.getLogger(__name__)
+
+AUTOSTOP = 6
+
+class BlockedEnum:
+    FRONT = 0
+    BACK = 1
 
 
 class Controller(object):
@@ -11,6 +18,7 @@ class Controller(object):
         self.robot = robot
         self.server = server
         self.loop = loop
+        self.blocked = {}
 
     def heartbeat(self):
         msg = BaseStationMsg()
@@ -39,7 +47,19 @@ class Controller(object):
                     motor.set(msg_motor.speed)
 
     def auto_stop(self):
-        self.robot.dist_bl.get_clean()
+        avg_front = (self.robot.dist_fl.get_clean() + self.robot.dist_fr.get_clean()) / 2
+        avg_speed = (self.robot.motor_right.get() + self.motor_right.get())
+        if avg_front < AUTOSTOP:
+            self.auto_stop.add(BlockedEnum.FRONT)
+            self.robot.motor_right.set_brake()
+            self.robot.motor_left.set_brake()
+        # self.robot.dist_bl.get_clean()
+
+    def _do_update_motor(self, rate):
+        if rate > 0 and BlockedEnum.FRONT not in self.blocked:
+            return False
+        else:
+            return True
 
     async def _wait_recv(self):
         logger.info('Start recv loop')
