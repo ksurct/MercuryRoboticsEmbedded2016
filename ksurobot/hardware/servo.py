@@ -33,7 +33,7 @@ class Servo:
         return self.controller.isMoving(self.my_id)
 
     def getMyID(self):
-        return my_id;
+        return my_id
 
     def conv(degrees):
         #TODO Check to make sure these values are correct

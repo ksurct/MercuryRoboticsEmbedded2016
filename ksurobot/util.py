@@ -26,6 +26,8 @@ class AsyncioLoop(object):
         asyncio.ensure_future(task)
 
 
-def get_config():
-    from .main import parser
-    return parser.parse_args()
+def gi_init():
+    sys.path.append('/usr/lib/python3/dist-packages/')
+    import gi
+
+    sys.path.pop()
