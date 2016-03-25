@@ -1,12 +1,9 @@
 #include <wiringPi.h>
 #include <iostream>
-#include <atomic>
 #include <functional>
+#include <mutex>
 
 using namespace std;
-
-void foo(){};
-
 
 class SpeedPin {
 public:
@@ -18,14 +15,15 @@ public:
         pinMode(pin_a, INPUT);
         wiringPiISR(pin_b, INT_EDGE_BOTH, func);
         pinMode(pin_b, INPUT);
-        this->ticks = (atomic_long*) ticks;
+        this->ticks = ticks;
         this->pin_a = pin_a;
         this->pin_b = pin_b;
     }
 
 private:
-    atomic_long *ticks;
-    atomic_char state;
+    mutex lock;
+    long int *ticks;
+    char state;
     int pin_a;
     int pin_b;
 
@@ -34,11 +32,12 @@ private:
     }
 
     void callback() {
+        lock_guard<mutex> lock(this->lock);
         char new_state;
         bool forward;
 
         new_state = (digitalRead(pin_a) << 1) | digitalRead(pin_b);
-        forward = (new_state == 0 && state == 3) || (new_state > state);
+        forward = (new_state == 0 && this->state == 3) || (new_state > this->state);
 
         forward ? this->ticks-- : this->ticks++;
         this->state = new_state;

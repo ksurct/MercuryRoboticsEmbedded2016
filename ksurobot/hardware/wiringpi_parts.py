@@ -113,17 +113,17 @@ class CSpeedEncoder(object):
         self.pin_a = pin_a
         self.pin_b = pin_b
 
-        self.state = c_byte()
-        self.last_tick = c_long()
+        self.ticks = c_long()
 
     def __enter__(self):
-        setup_speed_pin(pointer(self.last_tick), pointer(self.state), self.pin_a, self.pin_b)
+        setup_speed_pin(pointer(self.ticks), self.pin_a, self.pin_b)
         return self
 
     def __exit__(self):
         pass
 
+    def sample(self):
+        pass
+
     def get(self):
-        forward = 1 if self.state.value() else -1
-        
         return 0
