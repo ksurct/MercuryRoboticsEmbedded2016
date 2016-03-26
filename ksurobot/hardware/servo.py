@@ -4,10 +4,9 @@ control = Controller()
 
 class Servo(object):
 
-    def __init__(self, my_id, rotation, initPos = 0, x = 3990):
+    def __init__(self, my_id, initPos = 0, x = 3990):
         """
         my_id = the ID of the servo
-        rotation = the max rotation angle that the servo can go to
         initPos = The initial position to place servo at in degrees, defaults to 0
         x = the "0" position of the servo in quarter-microseconds
         """
@@ -40,10 +39,9 @@ class Servo(object):
 
 class TitaniumServo(Servo):
 
-    def __init__(self, my_id, rotation, initPos = 0):
+    def __init__(self, my_id, initPos = 0):
         """
         my_id = the ID of the servo
-        rotation = the max rotation angle that the servo can go to
         initPos = The initial position to place servo at in degrees, defaults to 0
         """
         self.my_id = my_id
@@ -60,3 +58,20 @@ class TitaniumServo(Servo):
 
     def conv(self, degrees):
         return int(self.x + 42 * degrees)
+
+class System3000Servo(Servo):
+
+    def __init__(self, my_id, initPos = 0):
+        """
+        my_id = the ID of the servo
+        rotation = the max rotation angle that the servo can go to
+        initPos = The initial position to place servo at in degrees, defaults to 0
+        """
+        self.my_id = my_id
+        self.controller = control
+        self.x = 4000
+        self.y = 8000
+        self.controller.setRange(self.my_id, 0, 0)
+        self.controller.setSpeed(self.my_id, 0)
+        self.controller.setAccel(self.my_id, 0)
+        self.setAngle(initPos)
