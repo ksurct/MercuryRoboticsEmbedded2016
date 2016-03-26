@@ -19,6 +19,12 @@ class Servo(object):
         self.controller.setAccel(self.my_id, 0)
         self.setAngle(initPos)
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *enc):
+        pass
+
     def setAngle(self, degrees):
         self.controller.setTarget(self.my_id, self.conv(degrees))
 
