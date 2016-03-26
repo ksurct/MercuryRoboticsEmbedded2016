@@ -38,6 +38,8 @@ class Servo(object):
         return int(self.x + degrees * ((self.y - self.x)/(90)))
 
 class TitaniumServo(Servo):
+    x = 4000;
+    y = 8000;
 
     def __init__(self, my_id, initPos = 0):
         """
@@ -46,11 +48,10 @@ class TitaniumServo(Servo):
         """
         self.my_id = my_id
         self.controller = control
-        self.x = 4000
-        self.y = 8000
         self.controller.setRange(self.my_id, 0, 0)
         self.controller.setSpeed(self.my_id, 0)
         self.controller.setAccel(self.my_id, 0)
+        self.setRange(self.my_id, self.x, self.y)
         self.setAngle(initPos)
 
     def setAngle(self, degrees):
@@ -60,6 +61,8 @@ class TitaniumServo(Servo):
         return int(self.x + 42 * degrees)
 
 class System3000Servo(Servo):
+    x = 4000;
+    y = 8000;
 
     def __init__(self, my_id, initPos = 0):
         """
@@ -69,9 +72,107 @@ class System3000Servo(Servo):
         """
         self.my_id = my_id
         self.controller = control
-        self.x = 4000
-        self.y = 8000
         self.controller.setRange(self.my_id, 0, 0)
         self.controller.setSpeed(self.my_id, 0)
         self.controller.setAccel(self.my_id, 0)
+        self.setRange(self.my_id, self.x, self.y)
         self.setAngle(initPos)
+
+        def setAngle(self, degrees):
+            self.controller.setTarget(self.my_id, self.conv(degrees))
+
+        def conv(self, degrees):
+            return int(self.x + 42 * degrees)
+
+class HS5035Servo(Servo):
+    x = 4380;
+    y = 7620;
+
+    def __init__(self, my_id, initPos = 0):
+        """
+        my_id = the ID of the servo
+        rotation = the max rotation angle that the servo can go to
+        initPos = The initial position to place servo at in degrees, defaults to 0
+        """
+        self.my_id = my_id
+        self.controller = control
+        self.controller.setRange(self.my_id, 0, 0)
+        self.controller.setSpeed(self.my_id, 0)
+        self.controller.setAccel(self.my_id, 0)
+        self.setRange(self.my_id, self.x, self.y)
+        self.setAngle(initPos)
+
+    def setAngle(self, degrees):
+        self.controller.setTarget(self.my_id, self.conv(degrees))
+
+    def conv(self, degrees):
+        return int(self.x + 18 * degrees)
+
+
+class TS53Servo(Servo):
+    x = 1088;
+    y = 9152;
+
+    def __init__(self, my_id, initPos = 0):
+        """
+        my_id = the ID of the servo
+        rotation = the max rotation angle that the servo can go to
+        initPos = The initial position to place servo at in degrees, defaults to 0
+        """
+        self.my_id = my_id
+        self.controller = control
+        self.controller.setRange(self.my_id, 0, 0)
+        self.controller.setSpeed(self.my_id, 0)
+        self.controller.setAccel(self.my_id, 0)
+        self.setRange(self.my_id, self.x, self.y)
+        self.setAngle(initPos)
+
+    def setAngle(self, degrees):
+        self.controller.setTarget(self.my_id, self.conv(degrees))
+
+    def conv(self, degrees):
+        return int(self.x + 45 * degrees)
+
+
+class ContinuousServo(Servo):
+    centerpoint = 6000;""" TODO Change centerpoint to correct value """
+
+    def __init__(self, my_id, initPos = 0):
+        """
+        my_id = the ID of the servo
+        rotation = the max rotation angle that the servo can go to
+        initPos = The initial position to place servo at in degrees, defaults to 0
+        """
+        self.my_id = my_id
+        self.controller = control
+        self.controller.setRange(self.my_id, 0, 0)
+        self.controller.setSpeed(self.my_id, 0)
+        self.controller.setAccel(self.my_id, 0)
+        self.setRange(self.my_id, 4000, 8000)
+        self.setAngle(centerpoint)
+
+    def nudgeLeft(self):
+        self.setAngle(centerpoint - 100)
+        sleep(.001)
+        self.setAngle(centerpoint)
+
+    def nudgeRight(self):
+        self.setAngle(centerpoint + 100)
+        sleep(.001)
+        self.setAngle(centerpoint)
+
+    def moveLeft(self):
+        self.setAngle(centerpoint - 1000)
+        sleep(.001)
+        self.setAngle(centerpoint)
+
+    def moveRight(self):
+        self.setAngle(centerpoint + 1000)
+        sleep(.001)
+        self.setAngle(centerpoint)
+
+    def setAngle(self, degrees):
+        self.controller.setTarget(self.my_id, degrees)
+
+    def conv(self, degrees):
+        return NULL
