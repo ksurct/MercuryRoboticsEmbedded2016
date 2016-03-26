@@ -1,9 +1,13 @@
 from contextlib import ExitStack
+from threading import Lock
 # import _wiringpi2
 
 from . import _wiringpi as wiringpi2
 from ._wiringpi_encoders import setup_speed_pin
 from ctypes import CFUNCTYPE, pointer, c_byte, c_long
+
+from .bases_encoders import BaseEncoder
+
 
 class WPRobotBase(object):
     def __init__(self):
@@ -85,30 +89,40 @@ class WPMotor(object):
         return 0
 
 
-class WPSpeedEncoder(object):
+class WPSpeedEncoder(BaseEncoder):
     def __init__(self, pin_a, pin_b):
         self.pin_a = pin_a
         self.pin_b = pin_b
 
+        self.ticks = 0
+        self.state = 0
+        self.lock = Lock()
+
     def __enter__(self):
-        wiringpi2.wiringPiISR(self.pin_a, wiringpi2.InterruptModes.INT_EDGE_FALLING, self.callback_a)
-        wiringpi2.wiringPiISR(self.pin_b, wiringpi2.InterruptModes.INT_EDGE_FALLING, self.callback_b)
+        wiringpi2.pinMode(self.pin_a, wiringpi2.PinModes.INPUT)
+        wiringpi2.wiringPiISR(self.pin_a, wiringpi2.InterruptModes.INT_EDGE_FALLING, self.callback)
+        wiringpi2.pinMode(self.pin_b, wiringpi2.PinModes.INPUT)
+        wiringpi2.wiringPiISR(self.pin_b, wiringpi2.InterruptModes.INT_EDGE_FALLING, self.callback)
 
-    def __exit__(self, *enc):
-        pass
-
-    @wiringpi2.wiringPiISR_cb
-    def callback_a():
-        pass
-        # print('callback_a')
+    def get_ticks(self):
+        with self.lock:
+            return self.ticks
 
     @wiringpi2.wiringPiISR_cb
-    def callback_b():
-        pass
-        # print('callback_b')
+    def callback():
+        with self.lock:
+            a = wiringpi2.digitalRead(self.pin_a)
+            b = wiringpi2.digitalRead(self.pin_b)
+            new_state = (a << 1) | b
+
+            forward = (new_state == 0 and self.state == 3) or new_state > self.state
+            if forward:
+                self.ticks += 1
+            else:
+                self.ticks -= 1
 
 
-class CSpeedEncoder(object):
+class CSpeedEncoder(BaseEncoder):
     def __init__(self, pin_a, pin_b):
         self.pin_a = pin_a
         self.pin_b = pin_b
@@ -119,11 +133,5 @@ class CSpeedEncoder(object):
         setup_speed_pin(pointer(self.ticks), self.pin_a, self.pin_b)
         return self
 
-    def __exit__(self):
-        pass
-
-    def sample(self):
-        pass
-
-    def get(self):
-        return 0
+    def get_ticks(self):
+        return self.ticks.value()
