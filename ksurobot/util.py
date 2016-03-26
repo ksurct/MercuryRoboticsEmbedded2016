@@ -31,3 +31,8 @@ def gi_init():
     import gi
 
     sys.path.pop()
+
+
+def get_config():
+    from .main import parser
+    return parser.parse_args()
