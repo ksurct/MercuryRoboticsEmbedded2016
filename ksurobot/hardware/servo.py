@@ -141,7 +141,7 @@ class TS53Servo(Servo):
 
 
 class ContinuousServo(Servo):
-    centerpoint = 6000;""" TODO Change centerpoint to correct value """
+    centerpoint = 5456;
 
     def __init__(self, my_id, initPos = 0):
         """
@@ -177,8 +177,11 @@ class ContinuousServo(Servo):
         sleep(.001)
         self.setAngle(centerpoint)
 
+    def resetZero(self, newval):
+        centerpoint = newval
+
     def setAngle(self, degrees):
         self.controller.setTarget(self.my_id, degrees)
 
     def conv(self, degrees):
-        return NULL
+        pass
