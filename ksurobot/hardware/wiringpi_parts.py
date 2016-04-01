@@ -91,25 +91,28 @@ class WPMotor(object):
 
 class WPSpeedEncoder(BaseEncoder):
     def __init__(self, pin_a, pin_b):
+        super().__init__()
         self.pin_a = pin_a
         self.pin_b = pin_b
 
         self.ticks = 0
         self.state = 0
         self.lock = Lock()
+        self._gc_roots = {}
 
     def __enter__(self):
+        cb = wiringpi2.wiringPiISR_cb(lambda: self.callback())
+        self._gc_roots.add(cb)
         wiringpi2.pinMode(self.pin_a, wiringpi2.PinModes.INPUT)
-        wiringpi2.wiringPiISR(self.pin_a, wiringpi2.InterruptModes.INT_EDGE_FALLING, self.callback)
+        wiringpi2.wiringPiISR(self.pin_a, wiringpi2.InterruptModes.INT_EDGE_FALLING, cb)
         wiringpi2.pinMode(self.pin_b, wiringpi2.PinModes.INPUT)
-        wiringpi2.wiringPiISR(self.pin_b, wiringpi2.InterruptModes.INT_EDGE_FALLING, self.callback)
+        wiringpi2.wiringPiISR(self.pin_b, wiringpi2.InterruptModes.INT_EDGE_FALLING, cb)
 
     def get_ticks(self):
         with self.lock:
             return self.ticks
 
-    @wiringpi2.wiringPiISR_cb
-    def callback():
+    def callback(self):
         with self.lock:
             a = wiringpi2.digitalRead(self.pin_a)
             b = wiringpi2.digitalRead(self.pin_b)

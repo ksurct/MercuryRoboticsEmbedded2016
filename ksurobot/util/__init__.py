@@ -34,5 +34,5 @@ def gi_init():
 
 
 def get_config():
-    from .main import parser
+    from ..main import parser
     return parser.parse_args()

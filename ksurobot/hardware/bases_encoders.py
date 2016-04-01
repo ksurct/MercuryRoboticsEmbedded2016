@@ -12,11 +12,11 @@ class BaseEncoder(AbstractPart):
         raise NotImplemented
 
     def get_update_delta(self):
-        ticks, time = self.get_ticks(), time()
+        ticks, new_time = self.get_ticks(), time()
         past_ticks, past_time = self.past_ticks, self.past_time
         self.past_ticks = ticks
-        self.past_time = time
-        return ticks - past_ticks, time - past_time
+        self.past_time = new_time
+        return ticks - past_ticks, new_time - past_time
 
     def get(self):
         """Return speed as rpm"""

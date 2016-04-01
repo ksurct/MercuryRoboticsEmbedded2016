@@ -5,7 +5,7 @@ from contextlib import ExitStack
 from ptpython.repl import embed
 
 from ..protocol.proto import main_pb2
-from ..robot import Robot, Server
+from ..robot import Robot
 
 
 def main():

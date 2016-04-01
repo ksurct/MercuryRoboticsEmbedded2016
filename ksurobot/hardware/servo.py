@@ -13,7 +13,6 @@ class Servo:
         """
         self.my_id = my_id
         self.controller = control
-        self.name = name
         self.x = x
         #TODO Test to see if the position of the servo in relation to the pulse
         #     width is linear or not
