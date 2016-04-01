@@ -98,11 +98,11 @@ class WPSpeedEncoder(BaseEncoder):
         self.ticks = 0
         self.state = 0
         self.lock = Lock()
-        self._gc_roots = set()
+        self._gc_roots = []
 
     def __enter__(self):
         cb = wiringpi2.wiringPiISR_cb(lambda: self.callback())
-        self._gc_roots.add(cb)
+        self._gc_roots.append(cb)
         wiringpi2.pinMode(self.pin_a, wiringpi2.PinModes.INPUT)
         wiringpi2.wiringPiISR(self.pin_a, wiringpi2.InterruptModes.INT_EDGE_FALLING, cb)
         wiringpi2.pinMode(self.pin_b, wiringpi2.PinModes.INPUT)
