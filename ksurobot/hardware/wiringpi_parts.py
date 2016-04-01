@@ -48,10 +48,11 @@ class WPLED(object):
 
 
 class WPMotor(object):
-    def __init__(self, dir_pin_a, dir_pin_b, speed_pin):
+    def __init__(self, dir_pin_a, dir_pin_b, speed_pin, reverse=False):
         self.dir_pin_a = dir_pin_a
         self.dir_pin_b = dir_pin_b
         self.speed_pin = speed_pin
+        self.reverse = reverse
 
     def __enter__(self):
         wiringpi2.pinMode(self.dir_pin_a, wiringpi2.PinModes.OUTPUT)
@@ -64,6 +65,8 @@ class WPMotor(object):
         pass
 
     def set(self, speed):
+        if self.reverse:
+            speed = -speed
         speed = speed*1024//100
         if speed < 0:
             wiringpi2.digitalWrite(self.dir_pin_a, 0)
@@ -113,16 +116,18 @@ class WPSpeedEncoder(BaseEncoder):
             return self.ticks
 
     def callback(self):
+        FORWARD = [1, 3, 0, 2]
         with self.lock:
             a = wiringpi2.digitalRead(self.pin_a)
             b = wiringpi2.digitalRead(self.pin_b)
             new_state = (a << 1) | b
 
-            forward = (new_state == 0 and self.state == 3) or new_state > self.state
+            forward = FORWARD[new_state] == self.state
             if forward:
                 self.ticks += 1
             else:
                 self.ticks -= 1
+            self.state = new_state
 
 
 class CSpeedEncoder(BaseEncoder):
