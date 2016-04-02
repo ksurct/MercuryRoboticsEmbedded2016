@@ -12,7 +12,6 @@ public:
     SpeedPin(int num, long int *ticks, int pin_a, int pin_b) {
         speed_pins[num] = this;
         if (num == 0) {
-            func = &callback_1;
             wiringPiISR(pin_a, INT_EDGE_BOTH, callback_1);
             wiringPiISR(pin_b, INT_EDGE_BOTH, callback_1);
         }
@@ -22,7 +21,6 @@ public:
         }
 
         pinMode(pin_a, INPUT);
-        wiringPiISR(pin_b, INT_EDGE_BOTH, func);
         pinMode(pin_b, INPUT);
         this->ticks = ticks;
         this->pin_a = pin_a;
