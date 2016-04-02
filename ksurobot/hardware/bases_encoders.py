@@ -3,8 +3,8 @@ from .bases import AbstractPart
 
 
 class BaseEncoder(AbstractPart):
-    def __init__(self, ticks_per_rot=40):
-        self.ticks_per_rot = ticks_per_rot
+    def __init__(self, ticks_per_rev=1200):
+        self.ticks_per_rev = ticks_per_rev
         self.past_ticks = 0
         self.past_time = time()
 
@@ -22,4 +22,4 @@ class BaseEncoder(AbstractPart):
         """Return speed as rpm"""
         dticks, dtime = self.get_update_delta()
 
-        return (60 / dtime) * (dticks / self.ticks_per_rot)
+        return (60 / dtime) * (dticks / self.ticks_per_rev)
