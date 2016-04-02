@@ -132,6 +132,7 @@ class WPSpeedEncoder(BaseEncoder):
 
 class CSpeedEncoder(BaseEncoder):
     def __init__(self, pin_a, pin_b):
+        super().__init__()
         self.pin_a = pin_a
         self.pin_b = pin_b
 
@@ -142,4 +143,4 @@ class CSpeedEncoder(BaseEncoder):
         return self
 
     def get_ticks(self):
-        return self.ticks.value()
+        return self.ticks.value

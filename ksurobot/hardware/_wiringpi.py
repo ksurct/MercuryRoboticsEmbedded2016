@@ -6,7 +6,7 @@ from ..util import get_config
 from .utils import Wrapper
 
 
-libwiringpi = Wrapper('libwiringPi.so.2.31')
+libwiringpi = Wrapper('/usr/local/lib/libwiringPi.so.2.32')
 
 wiringPiISR_cb = CFUNCTYPE(None)
 

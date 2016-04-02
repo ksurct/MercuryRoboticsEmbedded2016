@@ -8,12 +8,9 @@ using namespace std;
 class SpeedPin {
 public:
     SpeedPin(long int *ticks, int pin_a, int pin_b) {
-        function<void()> z = [=]() {this->callback();};
-        auto func = z.target<void()>();
-
-        wiringPiISR(pin_a, INT_EDGE_BOTH, func);
+        wiringPiDataISR(pin_a, INT_EDGE_BOTH, (void (*)(void*)) &SpeedPin::callback, this);
         pinMode(pin_a, INPUT);
-        wiringPiISR(pin_b, INT_EDGE_BOTH, func);
+        wiringPiDataISR(pin_b, INT_EDGE_BOTH, (void (*)(void*)) &SpeedPin::callback, this);
         pinMode(pin_b, INPUT);
         this->ticks = ticks;
         this->pin_a = pin_a;
@@ -27,20 +24,18 @@ private:
     int pin_a;
     int pin_b;
 
-    static void shim(SpeedPin* self) {
-        self->callback();
-    }
-
-    void callback() {
-        lock_guard<mutex> lock(this->lock);
+    static void callback(SpeedPin* self) {
+        lock_guard<mutex> lock(self->lock);
+        const int states [] = {1, 3, 0, 2};
         char new_state;
         bool forward;
 
-        new_state = (digitalRead(pin_a) << 1) | digitalRead(pin_b);
-        forward = (new_state == 0 && this->state == 3) || (new_state > this->state);
+        new_state = (digitalRead(self->pin_a) << 1) | digitalRead(self->pin_b);
+        forward = (new_state == 0 && self->state == 3) || (new_state > self->state);
 
-        forward ? this->ticks-- : this->ticks++;
-        this->state = new_state;
+        forward = states[new_state] == self->state;
+        forward ? (*self->ticks)-- : (*self->ticks)++;
+        self->state = new_state;
     }
 };
 

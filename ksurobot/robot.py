@@ -7,7 +7,7 @@ from .hardware.wiringpi_parts import (
     WPRobotBase as RobotBase,
     WPLED as LED,
     WPMotor as Motor,
-    WPSpeedEncoder as SpeedEncoder
+    CSpeedEncoder as SpeedEncoder
 )
 from .hardware.spidev_parts import DistanceSensor
 from .hardware.servo import Servo
