@@ -14,6 +14,7 @@ class Controller(object):
 
     def heartbeat(self):
         msg = BaseStationMsg()
+        # logger.debug("Right dt: %s", self.robot.motor_right_speed.ticks)
         logger.debug("Right speed: %s", self.robot.motor_right_speed.get())
         logger.debug("Left speed: %s", self.robot.motor_left_speed.get())
         msg.sensor_data.update = True

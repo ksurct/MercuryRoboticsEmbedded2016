@@ -5,13 +5,22 @@
 
 using namespace std;
 
+
+
 class SpeedPin {
 public:
-    SpeedPin(long int *ticks, int pin_a, int pin_b) {
-        function<void()> z = [=]() {this->callback();};
-        auto func = z.target<void()>();
+    SpeedPin(int num, long int *ticks, int pin_a, int pin_b) {
+        speed_pins[num] = this;
+        if (num == 0) {
+            func = &callback_1;
+            wiringPiISR(pin_a, INT_EDGE_BOTH, callback_1);
+            wiringPiISR(pin_b, INT_EDGE_BOTH, callback_1);
+        }
+        else if (num == 1) {
+            wiringPiISR(pin_a, INT_EDGE_BOTH, callback_2);
+            wiringPiISR(pin_b, INT_EDGE_BOTH, callback_2);
+        }
 
-        wiringPiISR(pin_a, INT_EDGE_BOTH, func);
         pinMode(pin_a, INPUT);
         wiringPiISR(pin_b, INT_EDGE_BOTH, func);
         pinMode(pin_b, INPUT);
@@ -27,8 +36,12 @@ private:
     int pin_a;
     int pin_b;
 
-    static void shim(SpeedPin* self) {
-        self->callback();
+    static SpeedPin* speed_pins[2];
+    static void callback_1() {
+        speed_pins[0]->callback();
+    }
+    static void callback_2() {
+        speed_pins[1]->callback();
     }
 
     void callback() {
@@ -49,7 +62,7 @@ private:
 This creates a memory leak, but that's ok.
 */
 extern "C" {
-    void setup_speed_pin(long int *last_tick, int pin_a, int pin_b) {
-        new SpeedPin(last_tick, pin_a, pin_b);
+    void setup_speed_pin(int num, long int *last_tick, int pin_a, int pin_b) {
+        new SpeedPin(num, last_tick, pin_a, pin_b);
     }
 }
