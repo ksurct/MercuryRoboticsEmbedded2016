@@ -13,6 +13,11 @@ def set_motor(v):
     r.motor_left.set(v)
 
 
+def set_motor_rpm(v):
+    r.motor_left_rpm.set(v)
+    r.motor_left_rpm.set(v)
+
+
 def interact():
     while True:
         cmd = int(input())
