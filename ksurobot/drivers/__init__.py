@@ -5,6 +5,9 @@ hardware and software.
 from ..hardware.wiringpi_parts import WPMotor, WPSpeedEncoder
 from ..util.PID import PID
 
+def limit100(num):
+    return max(0, min(100, num))
+
 
 class SpeedControlledMotor(object):
     def __init__(self, motor, encoder, pid):
@@ -25,7 +28,10 @@ class SpeedControlledMotor(object):
             pass
         else:
             self.pid.update(self.encoder.get())
-            self.motor.set(self.pid.output)
+            self.motor.set(self.get_output())
+
+    def get_output(self):
+        return limit100(self.pid.output)
 
     def set(self, rpm):
         self._brake = False
