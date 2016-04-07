@@ -54,6 +54,16 @@ class Controller(object):
                     motor.set_brake(True)
                 else:
                     motor.set(msg_motor.speed)
+            # Per rpm code
+            motor = getattr(self.robot, 'motor_'+motor_str+'_speed')
+            msg_motor = getattr(msg, 'motor_'+motor_str+'_rpm')
+            if msg_motor.update:
+                if msg_motor.breaks:
+                    motor.set_brake(True)
+                else:
+                    motor.set(msg_motor.speed)
+
+
 
     async def _wait_recv(self):
         logger.info('Start recv loop')
