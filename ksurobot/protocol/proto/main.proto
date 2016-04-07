@@ -25,10 +25,21 @@ message Robot {
     message Procedure {
         oneof procedure {
             GoInCircle circle = 1;
+            Throw throw = 2;
+            ForceUserControl forceUserControl = 3;
         }
 
         message GoInCircle {
+            // HACK Not implemented. An example of things to come.
             required int32 radius = 1;
+        }
+
+        message Throw {
+            // Begin the throw procedure.
+        }
+
+        message ForceUserControl {
+            // Abort any procedure and resume user control.
         }
     }
 }

@@ -11,6 +11,8 @@ class Controller(object):
         self.robot = robot
         self.server = server
         self.loop = loop
+        self.event_throwing = asyncio.Event()
+        self.event_throwing.clear()
 
     def heartbeat(self):
         msg = BaseStationMsg()
@@ -23,10 +25,23 @@ class Controller(object):
         msg.sensor_data.back_right = 6
         return msg.SerializeToString()
 
+    def throw_tick(self):
+        pass
+
     def recv(self, msg_):
         logger.debug('Recv msg {}'.format(msg_))
         msg = RobotMsg()
         msg.ParseFromString(msg_)
+
+        for proc in msg.procedures:
+            proc_name = proc.WhichOneof('procedure')
+            if proc_name == 'throw':
+                self.event_throwing.set()
+            elif proc_name == 'abort':
+                self.event_throwing.clear()
+
+        if self.event_throwing.is_set():
+            return
 
         if msg.headlights.update:
             self.robot.head_lights.set(msg.headlights.on)
@@ -52,6 +67,12 @@ class Controller(object):
             await asyncio.sleep(.3)
             msg = self.heartbeat()
             await self.server.send(msg)
+
+    async def _wait_throw(self):
+        while True:
+            await asyncio.sleep(.2)
+            await self.event_throwing.wait()
+            self.throw_tick()
 
     async def run(self):
         logger.info('Start main loop')
