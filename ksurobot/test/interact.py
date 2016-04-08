@@ -14,8 +14,8 @@ def set_motor(r, v):
 
 
 def set_motor_rpm(r, v):
-    r.motor_left_rpm.set(v)
-    r.motor_left_rpm.set(v)
+    r.motor_left_driver.set(v)
+    r.motor_left_driver.set(v)
 
 
 def interact():

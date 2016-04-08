@@ -12,7 +12,6 @@ def limit100(num):
 class SpeedControlledMotor(object):
     def __init__(self, motor, encoder, pid):
         assert isinstance(motor, WPMotor)
-        assert isinstance(encoder, WPSpeedEncoder)
         assert isinstance(pid, PID)
         self.motor = motor
         self.encoder = encoder
@@ -36,7 +35,7 @@ class SpeedControlledMotor(object):
 
     def set(self, rpm):
         self._brake = False
-        self.pid.SetPoint(rpm)
+        self.pid.SetPoint = rpm
 
     def set_brake(self):
         self._brake = True
