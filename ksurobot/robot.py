@@ -9,7 +9,7 @@ from .hardware.wiringpi_parts import (
     WPMotor as Motor,
     WPSpeedEncoder as SpeedEncoder
 )
-from .hardware.spidev_parts import DistanceSensor
+from .hardware.ir_sensor import ir_sensor
 from .hardware.servo import Servo
 from .protocol.server import Server as server_base
 from .protocol.server2 import ClientlessWebSocketServer
@@ -29,11 +29,8 @@ class Robot(RobotBase):
         self.camera = self.attach_device(Servo(0, 0))
         self.launch = self.attach_device(Servo(0, 0))
         self.claw  = self.attach_device(Servo(0, 0))
-        self.dist_fr = self.attach_device(DistanceSensor(0))
-        self.dist_fl= self.attach_device(DistanceSensor(0))
-        self.dist_br = self.attach_device(DistanceSensor(0))
-        self.dist_bl = self.attach_device(DistanceSensor(0))
-
+        self.dist_fr = self.attach_device(ir_sensor(0))
+        self.dist_fl= self.attach_device(ir_sensor(0))
 
 def main():
     config = get_config()
