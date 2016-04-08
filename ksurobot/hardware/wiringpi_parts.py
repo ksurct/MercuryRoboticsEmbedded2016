@@ -75,7 +75,7 @@ class WPMotor(object):
         else:
             wiringpi2.digitalWrite(self.dir_pin_a, 1)
             wiringpi2.digitalWrite(self.dir_pin_b, 0)
-        wiringpi2.pwmWrite(self.speed_pin, speed)
+        wiringpi2.pwmWrite(self.speed_pin, int(speed))
 
     def set_feq(self, feq):
         wiringpi2.pwmSetClock(feq)
@@ -131,8 +131,8 @@ class WPSpeedEncoder(BaseEncoder):
 
 
 class CSpeedEncoder(BaseEncoder):
-    def __init__(self, pin_a, pin_b):
-        super().__init__()
+    def __init__(self, pin_a, pin_b, **kwargs):
+        super().__init__(**kwargs)
         self.pin_a = pin_a
         self.pin_b = pin_b
 
