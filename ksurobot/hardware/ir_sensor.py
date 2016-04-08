@@ -2,7 +2,7 @@ import spidev
 import time
 spi = spidev.SpiDev()
 spi.open(0,0)
-class Ir_sensor:
+class IR_sensor:
     p1 = -0.0000000000010569
     p2 = 0.0000000027286
     p3 = -0.0000027447
