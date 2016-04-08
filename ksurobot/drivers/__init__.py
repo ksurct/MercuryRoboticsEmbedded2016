@@ -6,7 +6,7 @@ from ..hardware.wiringpi_parts import WPMotor, WPSpeedEncoder
 from ..util.PID import PID
 
 def limit100(num):
-    return max(0, min(100, num))
+    return max(-100, min(100, num))
 
 
 class SpeedControlledMotor(object):

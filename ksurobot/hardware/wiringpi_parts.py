@@ -131,8 +131,8 @@ class WPSpeedEncoder(BaseEncoder):
 
 
 class CSpeedEncoder(BaseEncoder):
-    def __init__(self, pin_a, pin_b):
-        super().__init__()
+    def __init__(self, pin_a, pin_b, **kwargs):
+        super().__init__(**kwargs)
         self.pin_a = pin_a
         self.pin_b = pin_b
 
