@@ -18,6 +18,7 @@ class SpeedControlledMotor(object):
         self.pid = pid
 
         self._brake = True
+        self._power = 0
 
     def update(self):
         if self._brake is True:
@@ -27,11 +28,12 @@ class SpeedControlledMotor(object):
             pass
         else:
             self.pid.update(self.encoder.get())
-            self.motor.set(self.get_output())
-        self.pid.output = self.get_output()
+            self._power += self.pid.output
+            self._power = limit100(self._power)
+            self.motor.set(self._power)
 
     def get_output(self):
-        return limit100(self.pid.output)
+        return self._power
 
     def set(self, rpm):
         self._brake = False
