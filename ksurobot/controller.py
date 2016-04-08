@@ -53,7 +53,7 @@ class Controller(object):
                 else:
                     motor.set(msg_motor.speed)
             # Per rpm code
-            motor = getattr(self.robot, 'motor_'+motor_str+'_speed')
+            motor = getattr(self.robot, 'motor_'+motor_str+'_driver')
             msg_motor = getattr(msg, 'motor_'+motor_str+'_rpm')
             if msg_motor.update:
                 if msg_motor.breaks:
@@ -61,7 +61,13 @@ class Controller(object):
                 else:
                     motor.set(msg_motor.speed)
 
-
+    async def _wait_sample(self):
+        while True:
+            await asyncio.sleep(.1)
+            self.robot.motor_left_speed.update()
+            self.robot.motor_right_speed.update()
+            self.robot.motor_left_driver.update()
+            self.robot.motor_right_driver.update()
 
     async def _wait_recv(self):
         logger.info('Start recv loop')
@@ -86,3 +92,4 @@ class Controller(object):
         logger.info('Start main loop')
         asyncio.ensure_future(self._wait_recv())
         asyncio.ensure_future(self._wait_heartbeat())
+        asyncio.ensure_future(self._wait_sample())

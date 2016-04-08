@@ -7,6 +7,7 @@ class BaseEncoder(AbstractPart):
         self.ticks_per_rev = ticks_per_rev
         self.past_ticks = 0
         self.past_time = time()
+        self._value = 0
 
     def get_ticks(self):
         raise NotImplemented
@@ -18,8 +19,11 @@ class BaseEncoder(AbstractPart):
         self.past_time = new_time
         return ticks - past_ticks, new_time - past_time
 
-    def get(self):
-        """Return speed as rpm"""
+    def update(self):
         dticks, dtime = self.get_update_delta()
 
-        return (60 / dtime) * (dticks / self.ticks_per_rev)
+        self._value = (60 / dtime) * (dticks / self.ticks_per_rev)
+
+    def get(self):
+        """Return speed as rpm"""
+        return self._value

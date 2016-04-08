@@ -19,7 +19,7 @@ class SpeedControlledMotor(object):
 
         self._brake = True
 
-    def tick(self):
+    def update(self):
         if self._brake is True:
             self.motor.set_brake(0)
             self._brake = None
