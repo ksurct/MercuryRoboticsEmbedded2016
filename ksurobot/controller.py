@@ -11,18 +11,35 @@ class Controller(object):
         self.robot = robot
         self.server = server
         self.loop = loop
+        self.event_throwing = asyncio.Event()
+        self.event_throwing.clear()
 
     def heartbeat(self):
         msg = BaseStationMsg()
+        logger.debug("Out %s", self.robot.motor_left_driver.pid.output)
+        logger.debug("RPM %s", self.robot.motor_left_speed.get())
         msg.sensor_data.update = True
         msg.sensor_data.front_left = self.robot.dist_fl.getValue()
         msg.sensor_data.front_right = self.robot.dist_fr.getValue()
         return msg.SerializeToString()
 
+    def throw_tick(self):
+        pass
+
     def recv(self, msg_):
         logger.debug('Recv msg {}'.format(msg_))
         msg = RobotMsg()
         msg.ParseFromString(msg_)
+
+        for proc in msg.procedures:
+            proc_name = proc.WhichOneof('procedure')
+            if proc_name == 'throw':
+                self.event_throwing.set()
+            elif proc_name == 'abort':
+                self.event_throwing.clear()
+
+        if self.event_throwing.is_set():
+            return
 
         if msg.headlights.update:
             self.robot.head_lights.set(msg.headlights.on)
@@ -35,6 +52,22 @@ class Controller(object):
                     motor.set_brake(True)
                 else:
                     motor.set(msg_motor.speed)
+            # Per rpm code
+            motor = getattr(self.robot, 'motor_'+motor_str+'_driver')
+            msg_motor = getattr(msg, 'motor_'+motor_str+'_rpm')
+            if msg_motor.update:
+                if msg_motor.breaks:
+                    motor.set_brake(True)
+                else:
+                    motor.set(msg_motor.speed)
+
+    async def _wait_sample(self):
+        while True:
+            await asyncio.sleep(.1)
+            self.robot.motor_left_speed.update()
+            self.robot.motor_right_speed.update()
+            self.robot.motor_left_driver.update()
+            self.robot.motor_right_driver.update()
 
     async def _wait_recv(self):
         logger.info('Start recv loop')
@@ -57,8 +90,18 @@ class Controller(object):
             self.robot.dist_fl.update()
 
 
+    async def _wait_throw(self):
+        while True:
+            await asyncio.sleep(.2)
+            await self.event_throwing.wait()
+            self.throw_tick()
+
+
     async def run(self):
         logger.info('Start main loop')
         asyncio.ensure_future(self._wait_recv())
         asyncio.ensure_future(self._wait_heartbeat())
+
         asyncio.ensure_future(self._wait_sensorread())
+
+        asyncio.ensure_future(self._wait_sample())

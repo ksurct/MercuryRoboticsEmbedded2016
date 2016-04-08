@@ -1,8 +1,13 @@
 from contextlib import ExitStack
+from threading import Lock
 # import _wiringpi2
 
 from . import _wiringpi as wiringpi2
-from ctypes import CFUNCTYPE
+from ._wiringpi_encoders import setup_speed_pin
+from ctypes import CFUNCTYPE, pointer, c_byte, c_long
+
+from .bases_encoders import BaseEncoder
+
 
 class WPRobotBase(object):
     def __init__(self):
@@ -43,10 +48,11 @@ class WPLED(object):
 
 
 class WPMotor(object):
-    def __init__(self, dir_pin_a, dir_pin_b, speed_pin):
+    def __init__(self, dir_pin_a, dir_pin_b, speed_pin, reverse=False):
         self.dir_pin_a = dir_pin_a
         self.dir_pin_b = dir_pin_b
         self.speed_pin = speed_pin
+        self.reverse = reverse
 
     def __enter__(self):
         wiringpi2.pinMode(self.dir_pin_a, wiringpi2.PinModes.OUTPUT)
@@ -59,6 +65,8 @@ class WPMotor(object):
         pass
 
     def set(self, speed):
+        if self.reverse:
+            speed = -speed
         speed = speed*1024//100
         if speed < 0:
             wiringpi2.digitalWrite(self.dir_pin_a, 0)
@@ -67,7 +75,7 @@ class WPMotor(object):
         else:
             wiringpi2.digitalWrite(self.dir_pin_a, 1)
             wiringpi2.digitalWrite(self.dir_pin_b, 0)
-        wiringpi2.pwmWrite(self.speed_pin, speed)
+        wiringpi2.pwmWrite(self.speed_pin, int(speed))
 
     def set_feq(self, feq):
         wiringpi2.pwmSetClock(feq)
@@ -84,24 +92,55 @@ class WPMotor(object):
         return 0
 
 
-class WPSpeedEncoder(object):
+class WPSpeedEncoder(BaseEncoder):
     def __init__(self, pin_a, pin_b):
+        super().__init__()
         self.pin_a = pin_a
         self.pin_b = pin_b
 
+        self.ticks = 0
+        self.state = 0
+        self.lock = Lock()
+        self._gc_roots = []
+
     def __enter__(self):
-        wiringpi2.wiringPiISR(self.pin_a, wiringpi2.InterruptModes.INT_EDGE_FALLING, self.callback_a)
-        wiringpi2.wiringPiISR(self.pin_b, wiringpi2.InterruptModes.INT_EDGE_FALLING, self.callback_b)
+        cb = wiringpi2.wiringPiISR_cb(lambda: self.callback())
+        self._gc_roots.append(cb)
+        wiringpi2.pinMode(self.pin_a, wiringpi2.PinModes.INPUT)
+        wiringpi2.wiringPiISR(self.pin_a, wiringpi2.InterruptModes.INT_EDGE_FALLING, cb)
+        wiringpi2.pinMode(self.pin_b, wiringpi2.PinModes.INPUT)
+        wiringpi2.wiringPiISR(self.pin_b, wiringpi2.InterruptModes.INT_EDGE_FALLING, cb)
 
-    def __exit__(self, *enc):
-        pass
+    def get_ticks(self):
+        with self.lock:
+            return self.ticks
 
-    @wiringpi2.wiringPiISR_cb
-    def callback_a():
-        pass
-        # print('callback_a')
+    def callback(self):
+        FORWARD = [1, 3, 0, 2]
+        with self.lock:
+            a = wiringpi2.digitalRead(self.pin_a)
+            b = wiringpi2.digitalRead(self.pin_b)
+            new_state = (a << 1) | b
 
-    @wiringpi2.wiringPiISR_cb
-    def callback_b():
-        pass
-        # print('callback_b')
+            forward = FORWARD[new_state] == self.state
+            if forward:
+                self.ticks += 1
+            else:
+                self.ticks -= 1
+            self.state = new_state
+
+
+class CSpeedEncoder(BaseEncoder):
+    def __init__(self, pin_a, pin_b, **kwargs):
+        super().__init__(**kwargs)
+        self.pin_a = pin_a
+        self.pin_b = pin_b
+
+        self.ticks = c_long()
+
+    def __enter__(self):
+        setup_speed_pin(pointer(self.ticks), self.pin_a, self.pin_b)
+        return self
+
+    def get_ticks(self):
+        return self.ticks.value

@@ -71,6 +71,9 @@ async def run(url):
             controller.update()
 
             robot_msg = RobotMessage()
+            
+            robot_msg.motor_left_rpm.update = True
+            robot_msg.motor_left_rpm.speed = 60
 
             robot_state.headlights.check_updates(robot_msg.headlights)
             robot_state.motor_right.check_updates(robot_msg.motor_right)
