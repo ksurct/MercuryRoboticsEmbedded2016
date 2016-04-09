@@ -31,9 +31,10 @@ class SpeedControlledMotor(object):
             self.pid.update(self.encoder.get())
             self._power += self.pid.output
             self._power = limit100(self._power)
-            if self._power < self._squelch:
-                self._power = 0
-            self.motor.set(self._power)
+            pwr = self._power
+            if pwr < self._squelch:
+                pwr = 0
+            self.motor.set(pwr)
 
     def get_output(self):
         return self._power
