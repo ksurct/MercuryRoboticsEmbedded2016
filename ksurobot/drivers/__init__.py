@@ -32,7 +32,7 @@ class SpeedControlledMotor(object):
             self._power += self.pid.output
             self._power = limit100(self._power)
             pwr = self._power
-            if pwr < self._squelch:
+            if abs(pwr) < self._squelch:
                 pwr = 0
             self.motor.set(pwr)
 
