@@ -28,7 +28,7 @@ class Robot(RobotBase):
         self.motor_left_driver = SpeedControlledMotor(self.motor_left, self.motor_left_speed, PID.PID(P=0.05))
         self.motor_right = self.attach_device(Motor(24, 23, 18, reverse=True))
         self.motor_right_speed = self.attach_device(SpeedEncoder(17, 27))
-        self.motor_right_driver = SpeedControlledMotor(self.motor_right, self.motor_right_speed, PID.PID(P=0.05))
+        self.motor_right_driver = SpeedControlledMotor(self.motor_right, self.motor_right_speed, PID.PID(P=0.05), reverse=True)
 
         # self.camera = self.attach_device(Servo(0, 0))
         # self.launch = self.attach_device(Servo(0, 0))
