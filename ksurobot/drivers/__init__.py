@@ -10,7 +10,7 @@ def limit100(num):
 
 
 class SpeedControlledMotor(object):
-    def __init__(self, motor, encoder, pid, reverse=False):
+    def __init__(self, motor, encoder, pid, reverse=False, squelch=5):
         assert isinstance(motor, WPMotor)
         assert isinstance(pid, PID)
         self.motor = motor
@@ -20,17 +20,19 @@ class SpeedControlledMotor(object):
         self._brake = True
         self._power = 0
         self._reverse = reverse
+        self._squelch = squelch
 
     def update(self):
         if self._brake is True:
+            self._power = 0
+            self.set(0)
             self.motor.set_brake(0)
-            self._brake = None
-        elif self._brake is None:
-            pass
         else:
             self.pid.update(self.encoder.get())
             self._power += self.pid.output
             self._power = limit100(self._power)
+            if self._power < self._squelch:
+                self._power = 0
             self.motor.set(self._power)
 
     def get_output(self):
