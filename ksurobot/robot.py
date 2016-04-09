@@ -30,7 +30,7 @@ class Robot(RobotBase):
         self.motor_right_speed = self.attach_device(SpeedEncoder(17, 27))
         self.motor_right_driver = SpeedControlledMotor(self.motor_right, self.motor_right_speed, PID.PID(P=0.05), reverse=False)
 
-        self.camera = self.attach_device(HS5035Servo(1, 0))
+        self.camera = self.attach_device(HS5035Servo(1, 180))
         self.launch = self.attach_device(LaunchServo(2))
         self.claw  = self.attach_device(Servo(4, 0))
         self.wrist = self.attach_device(ContinuousServo(3))

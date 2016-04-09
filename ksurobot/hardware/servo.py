@@ -95,7 +95,7 @@ class System3000Servo(Servo):
 
 class HS5035Servo(Servo):
     x = 4380
-    y = 8000
+    y = 7620
 
     def __init__(self, my_id, initPos = 0):
         """
