@@ -1,6 +1,9 @@
-#
+from time import sleep
+
 from ._maestro import Controller
+
 control = Controller()
+
 
 class Servo(object):
 
