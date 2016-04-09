@@ -38,14 +38,14 @@ class Servo(object):
         return self.controller.isMoving(self.my_id)
 
     def getMyID(self):
-        return self.my_id;
+        return self.my_id
 
     def conv(self, degrees):
         return int(self.x + degrees * ((self.y - self.x)/(90)))
 
 class TitaniumServo(Servo):
-    x = 4000;
-    y = 8000;
+    x = 4000
+    y = 8000
 
     def __init__(self, my_id, initPos = 0):
         """
@@ -57,7 +57,7 @@ class TitaniumServo(Servo):
         self.controller.setRange(self.my_id, 0, 0)
         self.controller.setSpeed(self.my_id, 0)
         self.controller.setAccel(self.my_id, 0)
-        self.setRange(self.my_id, self.x, self.y)
+        self.controller.setRange(self.my_id, self.x, self.y)
         self.setAngle(initPos)
 
     def setAngle(self, degrees):
@@ -67,8 +67,8 @@ class TitaniumServo(Servo):
         return int(self.x + 42 * degrees)
 
 class System3000Servo(Servo):
-    x = 4000;
-    y = 8000;
+    x = 4000
+    y = 8000
 
     def __init__(self, my_id, initPos = 0):
         """
@@ -81,7 +81,7 @@ class System3000Servo(Servo):
         self.controller.setRange(self.my_id, 0, 0)
         self.controller.setSpeed(self.my_id, 0)
         self.controller.setAccel(self.my_id, 0)
-        self.setRange(self.my_id, self.x, self.y)
+        self.controller.setRange(self.my_id, self.x, self.y)
         self.setAngle(initPos)
 
         def setAngle(self, degrees):
@@ -91,8 +91,8 @@ class System3000Servo(Servo):
             return int(self.x + 42 * degrees)
 
 class HS5035Servo(Servo):
-    x = 4380;
-    y = 7620;
+    x = 4380
+    y = 7620
 
     def __init__(self, my_id, initPos = 0):
         """
@@ -105,7 +105,7 @@ class HS5035Servo(Servo):
         self.controller.setRange(self.my_id, 0, 0)
         self.controller.setSpeed(self.my_id, 0)
         self.controller.setAccel(self.my_id, 0)
-        self.setRange(self.my_id, self.x, self.y)
+        self.controller.setRange(self.my_id, self.x, self.y)
         self.setAngle(initPos)
 
     def setAngle(self, degrees):
@@ -116,8 +116,8 @@ class HS5035Servo(Servo):
 
 
 class TS53Servo(Servo):
-    x = 1088;
-    y = 9152;
+    x = 1088
+    y = 9152
 
     def __init__(self, my_id, initPos = 0):
         """
@@ -130,7 +130,7 @@ class TS53Servo(Servo):
         self.controller.setRange(self.my_id, 0, 0)
         self.controller.setSpeed(self.my_id, 0)
         self.controller.setAccel(self.my_id, 0)
-        self.setRange(self.my_id, self.x, self.y)
+        self.controller.setRange(self.my_id, self.x, self.y)
         self.setAngle(initPos)
 
     def setAngle(self, degrees):
@@ -141,7 +141,7 @@ class TS53Servo(Servo):
 
 
 class ContinuousServo(Servo):
-    centerpoint = 5456;
+    centerpoint = 5456
 
     def __init__(self, my_id):
         """
@@ -154,8 +154,8 @@ class ContinuousServo(Servo):
         self.controller.setRange(self.my_id, 0, 0)
         self.controller.setSpeed(self.my_id, 0)
         self.controller.setAccel(self.my_id, 0)
-        self.setRange(self.my_id, 4000, 8000)
-        self.setAngle(centerpoint)
+        self.controller.setRange(self.my_id, 4000, 8000)
+        self.setAngle(self.centerpoint)
 
     def nudgeLeft(self):
         self.setAngle(centerpoint - 100)

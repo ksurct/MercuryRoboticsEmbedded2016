@@ -10,7 +10,7 @@ from .hardware.wiringpi_parts import (
     CSpeedEncoder as SpeedEncoder
 )
 from .hardware.spidev_parts import DistanceSensor
-from .hardware.servo import Servo
+from .hardware.servo import Servo, HS5035Servo, TS53Servo, ContinuousServo
 from .protocol.server import Server as server_base
 from .protocol.server2 import ClientlessWebSocketServer
 from .process_setup import process_setup
