@@ -44,6 +44,18 @@ class Controller(object):
         if msg.headlights.update:
             self.robot.head_lights.set(msg.headlights.on)
 
+        if msg.arm.update:
+            self.robot.launch.setAngle(msg.arm.degree)
+
+        if msg.claw.update:
+            self.robot.claw.setAngle(msg.claw.degree)
+
+        if msg.camera.update:
+            self.robot.camera.setAngle(msg.claw.degree)
+
+        if msg.wrist.update:
+            self.robot.wrist.setAngle(msg.claw.degree)
+
         for motor_str in ('right', 'left'):
             motor = getattr(self.robot, 'motor_'+motor_str)
             msg_motor = getattr(msg, 'motor_'+motor_str)

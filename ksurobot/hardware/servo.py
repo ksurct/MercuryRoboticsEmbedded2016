@@ -143,7 +143,7 @@ class TS53Servo(Servo):
 class ContinuousServo(Servo):
     centerpoint = 5456;
 
-    def __init__(self, my_id, initPos = 0):
+    def __init__(self, my_id):
         """
         my_id = the ID of the servo
         rotation = the max rotation angle that the servo can go to
