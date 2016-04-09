@@ -45,7 +45,7 @@ class Controller(object):
             self.robot.head_lights.set(msg.headlights.on)
 
         if msg.arm.update:
-            self.robot.launch.launch()
+            self.robot.launch.setTarget(msg.arm.degree)
 
         if msg.claw.update:
             self.robot.claw.setAngle(msg.claw.degree)

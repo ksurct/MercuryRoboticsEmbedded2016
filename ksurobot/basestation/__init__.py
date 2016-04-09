@@ -35,10 +35,12 @@ class RobotState(object):
 
         self.headlights = Component(on=controller.get_y)
         self.motor_right = Component(
-            speed=lambda: int(controller.get_left_y() * 120),
+            # speed=lambda: int(controller.get_left_y() * -120),
+            speed=lambda: self.calculate_motor_speed()[0],
             breaks=controller.get_b)
         self.motor_left = Component(
-            speed=lambda: int(controller.get_left_y() * 120),
+            # speed=lambda: int(controller.get_left_y() * -120),
+            speed=lambda: self.calculate_motor_speed()[1],
             breaks=controller.get_b)
 
     def _neg(self, num):
@@ -50,14 +52,32 @@ class RobotState(object):
         x = self.controller.get_left_x()
         y = self.controller.get_left_y()
 
-        forward_value = abs(int((abs(y) - abs(x)) * 100))
+        r, l = -y, -y
+        # r_neg = self._neg()
+        # l_neg = self._neg()
 
-        if abs(x) > abs(y) or y > 0:
-            if x > 0:
-                forward_value *= -1
-        #     100 + forward_value
+        # forward_value = abs(int((abs(y) - abs(x)) * 100))
+        #
+        # if abs(x) > abs(y) or y > 0:
+        #     if x > 0:
+        #         forward_value *= -1
+        # #     100 + forward_value
+        #
+        # return int(x)
 
-        return int(x)
+        # if x < 0:
+        #     r += x
+        # else:
+        #     l -= x
+        r += x
+        l += -x
+        # r += x
+        # l -= x
+
+
+        r = int(r*120)
+        l = int(l*120)
+        return r, l
 
 async def run(url):
     logger.info('Connecting to {}'.format(url))
@@ -85,7 +105,16 @@ async def run(url):
             # robot_msg.camera.update = True
             # robot_msg.camera.degree = 0
             robot_msg.claw.update = True
-            robot_msg.claw.degree = 0
+            robot_msg.claw.degree = controller.get_a() * 90
+
+            robot_msg.arm.update = True
+            if controller.get_right_trigger() > 0.9:
+                robot_msg.arm.degree = 5304
+            else:
+                robot_msg.arm.degree = 3120
+
+            robot_msg.camera.update = True
+            robot_msg.camera.degree = int((controller.get_right_x()) * 190)
 
             robot_state.headlights.check_updates(robot_msg.headlights)
             robot_state.motor_right.check_updates(robot_msg.motor_right_rpm)
