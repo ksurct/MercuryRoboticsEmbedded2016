@@ -1,8 +1,12 @@
 import logging.config
 from setproctitle import setproctitle
+import signal
 
 
 def process_setup():
+    exitcmd = lambda *_: exit(0)
+    signal.signal(signal.SIGINT, exitcmd)
+    signal.signal(signal.SIGTERM, exitcmd)
     setproctitle('ksurctrobot')
 
     logging.config.dictConfig({
