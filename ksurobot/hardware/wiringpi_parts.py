@@ -62,7 +62,7 @@ class WPMotor(object):
         self.set(0)
 
     def __exit__(self, *enc):
-        pass
+        self.set(0)
 
     def set(self, speed):
         if self.reverse:
