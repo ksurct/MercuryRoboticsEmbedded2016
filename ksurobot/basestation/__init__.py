@@ -5,6 +5,7 @@ from ..util import get_config
 import asyncio
 import websockets
 import logging
+from sys import stdout
 
 logger = logging.getLogger(__name__)
 
@@ -34,10 +35,10 @@ class RobotState(object):
 
         self.headlights = Component(on=controller.get_y)
         self.motor_right = Component(
-            speed=self.calculate_motor_speed,
+            speed=lambda: int(controller.get_left_y() * 120),
             breaks=controller.get_b)
         self.motor_left = Component(
-            speed=lambda: int(controller.get_left_x() * 100),
+            speed=lambda: int(controller.get_left_y() * 120),
             breaks=controller.get_b)
 
     def _neg(self, num):
@@ -78,17 +79,17 @@ async def run(url):
             # robot_msg.motor_right_rpm.update = True
             # robot_msg.motor_right_rpm.speed = 120
             # robot_msg.arm.update = True
-            # robot_msg.arm.degree = 70
-            # robot_msg.wrist.update = True
-            # robot_msg.wrist.degree = 2
+            # robot_msg.arm.degree = 10
+            robot_msg.wrist.update = True
+            robot_msg.wrist.degree = 2
             # robot_msg.camera.update = True
-            # robot_msg.camera.degree = 2
-            robot_msg.claw.update = True
-            robot_msg.claw.degree = 200
+            # robot_msg.camera.degree = 0
+            # robot_msg.claw.update = True
+            # robot_msg.claw.degree = 20
 
             robot_state.headlights.check_updates(robot_msg.headlights)
-            robot_state.motor_right.check_updates(robot_msg.motor_right)
-            robot_state.motor_left.check_updates(robot_msg.motor_left)
+            robot_state.motor_right.check_updates(robot_msg.motor_right_rpm)
+            robot_state.motor_left.check_updates(robot_msg.motor_left_rpm)
 
             ser_msg = robot_msg.SerializeToString()
 
@@ -96,8 +97,7 @@ async def run(url):
 
             with suppress(asyncio.TimeoutError):
                 msg = await asyncio.wait_for(websocket.recv(), .1)
-                print(msg)
-
+                # print(msg)
 
 def main():
     config = get_config()

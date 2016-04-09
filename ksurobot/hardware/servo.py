@@ -14,7 +14,7 @@ class Servo(object):
         self.controller = control
         self.x = x
         self.y = 7910
-        self.controller.setRange(self.my_id, 0, 0)
+        self.controller.setRange(self.my_id, 4000, 8000)
         self.controller.setSpeed(self.my_id, 0)
         self.controller.setAccel(self.my_id, 0)
         self.setAngle(initPos)
