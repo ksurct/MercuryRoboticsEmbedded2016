@@ -158,27 +158,27 @@ class ContinuousServo(Servo):
         self.setAngle(self.centerpoint)
 
     def nudgeLeft(self):
-        self.setAngle(centerpoint - 100)
+        self.setAngle(self.centerpoint - 100)
         sleep(.001)
-        self.setAngle(centerpoint)
+        self.setAngle(self.centerpoint)
 
     def nudgeRight(self):
-        self.setAngle(centerpoint + 100)
+        self.setAngle(self.centerpoint + 100)
         sleep(.001)
-        self.setAngle(centerpoint)
+        self.setAngle(self.centerpoint)
 
     def moveLeft(self):
-        self.setAngle(centerpoint - 1000)
+        self.setAngle(self.centerpoint - 1000)
         sleep(.001)
-        self.setAngle(centerpoint)
+        self.setAngle(self.centerpoint)
 
     def moveRight(self):
-        self.setAngle(centerpoint + 1000)
+        self.setAngle(self.centerpoint + 1000)
         sleep(.001)
-        self.setAngle(centerpoint)
+        self.setAngle(self.centerpoint)
 
     def resetZero(self, newval):
-        centerpoint = newval
+        self.centerpoint = newval
 
     def setAngle(self, degrees):
         self.controller.setTarget(self.my_id, degrees)
