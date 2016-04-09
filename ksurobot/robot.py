@@ -19,7 +19,9 @@ from .util import AsyncioLoop, get_config, PID
 from .drivers import SpeedControlledMotor
 
 MOTOR_PID = {
-    'P': 0.1
+    'P': 0.05,
+    'I': 0.0,
+    'D': 0.02
 }
 
 
@@ -29,10 +31,10 @@ class Robot(RobotBase):
         self.head_lights = self.attach_device(LED(5))
         self.motor_left = self.attach_device(Motor(6, 13, 19, reverse=True))
         self.motor_left_speed = self.attach_device(SpeedEncoder(8, 25))
-        self.motor_left_driver = SpeedControlledMotor(self.motor_left, self.motor_left_speed, PID.PID(P=**MOTOR_PID), reverse=True)
+        self.motor_left_driver = SpeedControlledMotor(self.motor_left, self.motor_left_speed, PID.PID(**MOTOR_PID), reverse=True)
         self.motor_right = self.attach_device(Motor(24, 23, 18, reverse=True))
         self.motor_right_speed = self.attach_device(SpeedEncoder(17, 27))
-        self.motor_right_driver = SpeedControlledMotor(self.motor_right, self.motor_right_speed, PID.PID(P=**MOTOR_PID), reverse=False)
+        self.motor_right_driver = SpeedControlledMotor(self.motor_right, self.motor_right_speed, PID.PID(**MOTOR_PID), reverse=False)
 
         self.camera = self.attach_device(HS5035Servo(1, 180))
         self.launch = self.attach_device(LaunchServo(2))

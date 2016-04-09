@@ -82,7 +82,7 @@ class Controller(object):
 
     async def _wait_sample(self):
         while True:
-            await asyncio.sleep(.1)
+            await asyncio.sleep(.05)
             self.robot.motor_left_speed.update()
             self.robot.motor_right_speed.update()
             self.robot.motor_left_driver.update()

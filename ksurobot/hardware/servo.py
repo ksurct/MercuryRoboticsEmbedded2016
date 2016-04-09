@@ -202,7 +202,7 @@ class LaunchServo(Servo):
         self.controller.setSpeed(self.my_id, 0)
         self.controller.setAccel(self.my_id, 0)
         self.controller.setRange(self.my_id, 3000, 6000)
-        self.controller.setTarget(self.my_id, degrees)
+        self.controller.setTarget(self.my_id, 3120)
 
     def launch(self):
         self.controller.setTarget(self.my_id, 5304)

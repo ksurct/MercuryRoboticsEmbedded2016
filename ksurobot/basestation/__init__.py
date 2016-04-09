@@ -69,11 +69,9 @@ class RobotState(object):
         #     r += x
         # else:
         #     l -= x
-        r += x
-        l += -x
-        # r += x
-        # l -= x
-
+        x *= 1
+        r += -x
+        l += x
 
         r = int(r*120)
         l = int(l*120)
