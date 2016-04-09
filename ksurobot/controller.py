@@ -54,7 +54,14 @@ class Controller(object):
             self.robot.camera.setAngle(msg.claw.degree)
 
         if msg.wrist.update:
-            self.robot.wrist.setAngle(msg.claw.degree)
+            if msg.wrist.degree == 1:
+                self.robot.wrist.MoveLeft()
+            if msg.wrist.degree == 2:
+                self.robot.wrist.NudgeLeft()
+            if msg.wrist.degree == 3:
+                self.robot.wrist.NudgeRight()
+            if msg.wrist.degree == 4:
+                self.robot.wrist.MoveRight()
 
         for motor_str in ('right', 'left'):
             motor = getattr(self.robot, 'motor_'+motor_str)
