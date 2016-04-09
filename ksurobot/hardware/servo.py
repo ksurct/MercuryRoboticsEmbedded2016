@@ -188,3 +188,21 @@ class ContinuousServo(Servo):
 
     def conv(self, degrees):
         pass
+
+class LaunchServo(Servo):
+    def __init__(self, my_id):
+        """
+        my_id = the ID of the servo
+        rotation = the max rotation angle that the servo can go to
+        initPos = The initial position to place servo at in degrees, defaults to 0
+        """
+        self.my_id = my_id
+        self.controller = control
+        self.controller.setRange(self.my_id, 0, 0)
+        self.controller.setSpeed(self.my_id, 0)
+        self.controller.setAccel(self.my_id, 0)
+        self.controller.setRange(self.my_id, 3000, 6000)
+        self.controller.setTarget(self.my_id, degrees)
+
+    def launch(self):
+        self.controller.setTarget(self.my_id, 5304)
