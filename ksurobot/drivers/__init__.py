@@ -42,5 +42,5 @@ class SpeedControlledMotor(object):
             rpm = -rpm
         self.pid.SetPoint = rpm
 
-    def set_brake(self):
+    def set_brake(self, type):
         self._brake = True
