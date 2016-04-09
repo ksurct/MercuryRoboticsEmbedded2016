@@ -72,6 +72,12 @@ async def run(url):
 
             robot_msg = RobotMessage()
 
+            robot_msg.motor_left_rpm.update = True
+            robot_msg.motor_left_rpm.speed = 120
+
+            robot_msg.motor_right_rpm.update = True
+            robot_msg.motor_right_rpm.speed = 120
+
             robot_state.headlights.check_updates(robot_msg.headlights)
             robot_state.motor_right.check_updates(robot_msg.motor_right)
             robot_state.motor_left.check_updates(robot_msg.motor_left)

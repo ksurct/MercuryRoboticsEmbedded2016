@@ -4,7 +4,9 @@ message Robot {
     // Message to the robot
     optional LED headlights = 1;
     optional Motor motor_left = 2;
+    optional Motor motor_left_rpm = 6; // rpm rather then percent
     optional Motor motor_right = 3;
+    optional Motor motor_right_rpm = 7;
     repeated Procedure procedures = 4;
     optional Servo arm = 5;
 
@@ -25,10 +27,21 @@ message Robot {
     message Procedure {
         oneof procedure {
             GoInCircle circle = 1;
+            Throw throw = 2;
+            ForceUserControl forceUserControl = 3;
         }
 
         message GoInCircle {
+            // HACK Not implemented. An example of things to come.
             required int32 radius = 1;
+        }
+
+        message Throw {
+            // Begin the throw procedure.
+        }
+
+        message ForceUserControl {
+            // Abort any procedure and resume user control.
         }
     }
 }
