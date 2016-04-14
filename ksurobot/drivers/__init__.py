@@ -29,7 +29,7 @@ class SpeedControlledMotor(object):
             self.motor.set_brake(0)
         else:
             self.pid.update(self.encoder.get())
-            self._power += self.pid.output
+            self._power -= self.pid.output
             self._power = limit100(self._power)
             pwr = self._power
             if abs(pwr) < self._squelch:

@@ -73,8 +73,12 @@ class RobotState(object):
         r += -x
         l += x
 
-        r = int(r*120)
-        l = int(l*120)
+        modifier = 120
+        if self.controller.get_x():
+            modifier = 60
+
+        r = int(r*modifier)
+        l = int(l*modifier)
         return r, l
 
 async def run(url):
@@ -86,6 +90,9 @@ async def run(url):
     robot_state = RobotState(controller)
 
     async with websockets.connect(url) as websocket:
+        headlights_state = False
+        headlights_btn_state = False
+
         while True:
             controller.update()
 
@@ -112,9 +119,15 @@ async def run(url):
                 robot_msg.arm.degree = 3120
 
             robot_msg.camera.update = True
-            robot_msg.camera.degree = int((controller.get_right_x()) * 190)
+            robot_msg.camera.degree = 190 - int((controller.get_right_x()) * 190)
 
-            robot_state.headlights.check_updates(robot_msg.headlights)
+            if headlights_btn_state ^ controller.get_y():
+                headlights_btn_state = controller.get_y()
+                if headlights_btn_state == True:
+                    headlights_state = not headlights_state
+                    robot_msg.headlights.update = True
+                    robot_msg.headlights.on = headlights_state
+            # robot_state.headlights.check_updates(robot_msg.headlights)
             robot_state.motor_right.check_updates(robot_msg.motor_right_rpm)
             robot_state.motor_left.check_updates(robot_msg.motor_left_rpm)
 
