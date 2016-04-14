@@ -17,8 +17,8 @@ class Controller(object):
     def heartbeat(self):
         msg = BaseStationMsg()
         msg.sensor_data.update = True
-        msg.sensor_data.front_left = self.robot.dist_fl.getValue()
-        msg.sensor_data.front_right = self.robot.dist_fr.getValue()
+        msg.sensor_data.front_left = self.robot.dist_fl.get()
+        msg.sensor_data.front_right = self.robot.dist_fr.get()
         return msg.SerializeToString()
 
     def throw_tick(self):

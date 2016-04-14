@@ -7,7 +7,7 @@ class IR_sensor:
     p2 = 0.0000000027286
     p3 = -0.0000027447
     p4 = 0.0013672
-    p5 = - 0.351
+    p5 = -0.351
     p6 = 41.779
 
     def __init__(self, sensor_id):
@@ -19,19 +19,19 @@ class IR_sensor:
     def __enter__(self):
         return self
 
+    def __exit__(self, *enc):
+        return
+
     def update(self):
        resp = spi.xfer2([1, (8+self.sensor_id) << 4, 0])
        data  = ((resp[1]&3) << 8) + resp[2]
-       temp  = p1*data**5 + p2*data**4 + p3*data**3 + p4*data**2 + p5*data + p6
-       self.digiFilter[count] = temp
+       temp  = self.p1*data**5 + self.p2*data**4 + self.p3*data**3 + self.p4*data**2 + self.p5*data + self.p6
+       self.digiFilter[self.count] = temp
        if (self.count < 4):
            self.count += 1
        else:
            self.count = 0
        self._value = sum(self.digiFilter)/5
 
-    def getValue(self):
+    def get(self):
           return self._value
-
-    def __exit__(self,*enc):
-        return
