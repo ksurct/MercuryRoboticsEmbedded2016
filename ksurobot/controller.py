@@ -17,10 +17,8 @@ class Controller(object):
     def heartbeat(self):
         msg = BaseStationMsg()
         msg.sensor_data.update = True
-        msg.sensor_data.front_left = 3
-        msg.sensor_data.front_right = 4
-        msg.sensor_data.back_left = 5
-        msg.sensor_data.back_right = 6
+        msg.sensor_data.front_left = int(self.robot.dist_fl.get())
+        msg.sensor_data.front_right = int(self.robot.dist_fr.get())
         return msg.SerializeToString()
 
     def throw_tick(self):
@@ -101,14 +99,26 @@ class Controller(object):
             msg = self.heartbeat()
             await self.server.send(msg)
 
+    async def _wait_sensorread(self):
+        logger.info('Start sensorread loop')
+        while True:
+            await asyncio.sleep(.03)
+            self.robot.dist_fr.update()
+            self.robot.dist_fl.update()
+
+
     async def _wait_throw(self):
         while True:
             await asyncio.sleep(.2)
             await self.event_throwing.wait()
             self.throw_tick()
 
+
     async def run(self):
         logger.info('Start main loop')
         asyncio.ensure_future(self._wait_recv())
         asyncio.ensure_future(self._wait_heartbeat())
+
+        asyncio.ensure_future(self._wait_sensorread())
+
         asyncio.ensure_future(self._wait_sample())

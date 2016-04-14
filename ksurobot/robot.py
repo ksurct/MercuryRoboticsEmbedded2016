@@ -9,7 +9,8 @@ from .hardware.wiringpi_parts import (
     WPMotor as Motor,
     CSpeedEncoder as SpeedEncoder
 )
-from .hardware.spidev_parts import DistanceSensor
+
+from .hardware.ir_sensor import IR_sensor
 from .hardware.servo import Servo, HS5035Servo, TS53Servo, ContinuousServo, LaunchServo
 from .protocol.server import Server as server_base
 from .protocol.server2 import ClientlessWebSocketServer
@@ -28,6 +29,7 @@ MOTOR_PID = {
 class Robot(RobotBase):
     def __init__(self):
         super().__init__()
+
         self.head_lights = self.attach_device(LED(5))
         self.motor_left = self.attach_device(Motor(6, 13, 19, reverse=True))
         self.motor_left_speed = self.attach_device(SpeedEncoder(8, 25))
@@ -35,6 +37,11 @@ class Robot(RobotBase):
         self.motor_right = self.attach_device(Motor(24, 23, 18, reverse=True))
         self.motor_right_speed = self.attach_device(SpeedEncoder(17, 27))
         self.motor_right_driver = SpeedControlledMotor(self.motor_right, self.motor_right_speed, PID.PID(**MOTOR_PID), reverse=False)
+        self.dist_fr = self.attach_device(IR_sensor(0))
+        self.dist_fl= self.attach_device(IR_sensor(1))
+        # self.camera = self.attach_device(Servo(0, 0))
+        # self.launch = self.attach_device(Servo(0, 0))
+        # self.claw  = self.attach_device(Servo(0, 0))
 
         self.camera = self.attach_device(HS5035Servo(1, 180))
         self.launch = self.attach_device(LaunchServo(2))
