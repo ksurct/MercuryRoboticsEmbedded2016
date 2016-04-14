@@ -19,7 +19,7 @@ from .util import AsyncioLoop, get_config, PID
 from .drivers import SpeedControlledMotor
 
 MOTOR_PID = {
-    'P': 0.05,
+    'P': 0.1,
     'I': 0.0,
     'D': 0.02
 }

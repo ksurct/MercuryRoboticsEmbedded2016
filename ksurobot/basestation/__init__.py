@@ -70,8 +70,8 @@ class RobotState(object):
         # else:
         #     l -= x
         x *= 1
-        r += -x
-        l += x
+        r += -x/4
+        l += x/4
 
         modifier = 120
         if self.controller.get_x():
