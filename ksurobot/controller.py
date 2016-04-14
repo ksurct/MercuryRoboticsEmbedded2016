@@ -44,6 +44,25 @@ class Controller(object):
         if msg.headlights.update:
             self.robot.head_lights.set(msg.headlights.on)
 
+        if msg.arm.update:
+            self.robot.launch.setTarget(msg.arm.degree)
+
+        if msg.claw.update:
+            self.robot.claw.setAngle(msg.claw.degree)
+
+        if msg.camera.update:
+            self.robot.camera.setAngle(msg.camera.degree)
+
+        if msg.wrist.update:
+            if msg.wrist.degree == 1:
+                self.robot.wrist.moveLeft()
+            if msg.wrist.degree == 2:
+                self.robot.wrist.nudgeLeft()
+            if msg.wrist.degree == 3:
+                self.robot.wrist.nudgeRight()
+            if msg.wrist.degree == 4:
+                self.robot.wrist.moveRight()
+
         for motor_str in ('right', 'left'):
             motor = getattr(self.robot, 'motor_'+motor_str)
             msg_motor = getattr(msg, 'motor_'+motor_str)
@@ -63,7 +82,7 @@ class Controller(object):
 
     async def _wait_sample(self):
         while True:
-            await asyncio.sleep(.1)
+            await asyncio.sleep(.025)
             self.robot.motor_left_speed.update()
             self.robot.motor_right_speed.update()
             self.robot.motor_left_driver.update()

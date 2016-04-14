@@ -10,7 +10,9 @@ message Robot {
     repeated Procedure procedures = 4;
     optional Servo arm = 5;
     optional Servo claw = 8;
-    
+    optional Servo camera = 9;
+    optional Servo wrist = 10;
+
     message Motor {
         optional bool update = 1;
         // range 0 to 100, as precent of total
