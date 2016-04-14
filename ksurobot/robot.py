@@ -11,7 +11,6 @@ from .hardware.wiringpi_parts import (
 )
 
 from .hardware.ir_sensor import IR_sensor
-from .hardware.spidev_parts import DistanceSensor
 from .hardware.servo import Servo, HS5035Servo, TS53Servo, ContinuousServo, LaunchServo
 from .protocol.server import Server as server_base
 from .protocol.server2 import ClientlessWebSocketServer
