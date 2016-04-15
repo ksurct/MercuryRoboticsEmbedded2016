@@ -19,7 +19,7 @@ def install_service():
 
 def install_service_video():
     text = create_service('faucet 9001 --out /opt/vc/bin/raspivid -o - -t 0 -b 1000000')
-    with open('/etc/systemd/system/ksurobot.service', mode='w') as f:
+    with open('/etc/systemd/system/ksurobot_video.service', mode='w') as f:
         f.write(text)
 
 
