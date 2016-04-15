@@ -2,7 +2,7 @@ import argparse
 from .util import get_config
 from .process_setup import process_setup
 
-DEFAULT_PORT = 8002
+DEFAULT_PORT = 9002
 DEFAULT_ADDR = 'raspberrypi.local'
 
 

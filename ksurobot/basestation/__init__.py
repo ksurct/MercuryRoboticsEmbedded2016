@@ -1,6 +1,6 @@
 from contextlib import suppress
 from .controller import Controller
-from ..protocol.proto.main_pb2 import Robot as RobotMessage
+from ..protocol.proto.main_pb2 import Robot as RobotMessage, BaseStation
 from ..util import get_config
 import asyncio
 import websockets
@@ -138,6 +138,11 @@ async def run(url):
             with suppress(asyncio.TimeoutError):
                 msg = await asyncio.wait_for(websocket.recv(), .1)
                 # print(msg)
+                base_msg = BaseStation()
+                base_msg.ParseFromString(msg)
+
+                print("SD left ", base_msg.sensor_data.front_left)
+                print("SD right ", base_msg.sensor_data.front_right)
 
 def main():
     config = get_config()
