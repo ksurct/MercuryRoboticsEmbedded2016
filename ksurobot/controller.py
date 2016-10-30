@@ -52,11 +52,14 @@ class Controller(object):
         if msg.camera.update:
             self.robot.camera.setAngle(msg.camera.degree)
 
-        if msg.video_feed.update:
-            if video_feed == 1:
-                video_handler.open_video(host, port)
-            else:
-                video_handler.close_video()
+        if msg.video_feed:
+            assert len(self.server._active_connections) == 1
+            conn = list(self.server._active_connections)[0]
+            (host, port) = conn.remote_address
+
+            video_handler.open_video(host, 9001) #TODO DONT HARD CODE
+        else:
+            video_handler.close_video()
 
         if msg.wrist.update:
             if msg.wrist.degree == 1:
