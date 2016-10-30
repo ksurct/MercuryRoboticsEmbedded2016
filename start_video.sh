@@ -1,5 +1,7 @@
 #!/bin/bash -ex
 
+
+
 rm -f fifo.500
 mkfifo fifo.500
 nc.traditional -l 9001 < ./fifo.500 &

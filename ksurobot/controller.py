@@ -2,6 +2,7 @@ import asyncio
 import logging
 from contextlib import suppress
 from .protocol.proto.main_pb2 import Robot as RobotMsg, BaseStation as BaseStationMsg
+from .util.video_stream import video_handler
 
 logger = logging.getLogger(__name__)
 
@@ -50,6 +51,12 @@ class Controller(object):
 
         if msg.camera.update:
             self.robot.camera.setAngle(msg.camera.degree)
+
+        if msg.video_feed.update:
+            if video_feed == 1:
+                video_handler.open_video(host, port)
+            else:
+                video_handler.close_video()
 
         if msg.wrist.update:
             if msg.wrist.degree == 1:
