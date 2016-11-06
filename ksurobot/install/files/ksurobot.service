@@ -1,5 +1,6 @@
 [Service]
 ExecStart={service_cmd}
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
