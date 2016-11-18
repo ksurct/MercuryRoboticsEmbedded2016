@@ -57,7 +57,7 @@ class Controller(object):
             conn = list(self.server._active_connections)[0]
             (host, port) = conn.remote_address
 
-            video_handler.open_video(host, 9001) #TODO DONT HARD CODE
+            video_handler.open_video(host, 9001)
         else:
             video_handler.close_video()
 

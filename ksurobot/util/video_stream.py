@@ -3,7 +3,7 @@ import shlex
 import atexit
 
 VIDEO_STRING = "gst-launch-1.0 v4l2src device=/dev/video0 ! 'video/x-raw,width=640,height=480' !  x264enc pass=qual quantizer=2 tune=zerolatency ! rtph264pay ! udpsink host={} port={}"
-VIDEO_STRING = """bash -c "raspivid -o - -t 0 | gst-launch-1.0 fdsrc ! h264parse !  rtph264pay config-interval=1 ! udpsink host=10.243.247.87 port=9001" """
+VIDEO_STRING = """bash -c "raspivid -o - -t 0 | gst-launch-1.0 fdsrc ! h264parse !  rtph264pay config-interval=1 ! udpsink host={host} port={port}" """
 
 
 class VideoHandler(object):
