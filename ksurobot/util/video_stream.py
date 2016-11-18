@@ -12,7 +12,8 @@ class VideoHandler(object):
 
     def open_video(self, host, port):
         if self.process_handle is None:
-            self.process_handle = subprocess.Popen(shlex.split(VIDEO_STRING.format(host, port)))
+            self.process_handle = subprocess.Popen(
+                shlex.split(VIDEO_STRING.format(host=host, port=port)))
 
     def close_video(self):
         if self.process_handle is not None:
